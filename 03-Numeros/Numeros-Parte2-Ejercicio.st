@@ -1,4 +1,4 @@
-!classDefinition: #NumeroTest category: #'Numeros-Parte2-Ejercicio'!
+!classDefinition: #NumeroTest category: 'Numeros-Parte2-Ejercicio'!
 TestCase subclass: #NumeroTest
 	instanceVariableNames: 'zero one two four oneFifth oneHalf five twoFifth twoTwentyfifth fiveHalfs three eight negativeOne negativeTwo'
 	classVariableNames: ''
@@ -287,7 +287,7 @@ setUp
 	! !
 
 
-!classDefinition: #Numero category: #'Numeros-Parte2-Ejercicio'!
+!classDefinition: #Numero category: 'Numeros-Parte2-Ejercicio'!
 Object subclass: #Numero
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -343,7 +343,7 @@ invalidNumberType
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Numero class' category: #'Numeros-Parte2-Ejercicio'!
+!classDefinition: 'Numero class' category: 'Numeros-Parte2-Ejercicio'!
 Numero class
 	instanceVariableNames: ''!
 
@@ -357,34 +357,64 @@ invalidNumberTypeErrorDescription
 	^ 'Tipo de Número Inválido'! !
 
 
-!classDefinition: #Entero category: #'Numeros-Parte2-Ejercicio'!
+!classDefinition: #Entero category: 'Numeros-Parte2-Ejercicio'!
 Numero subclass: #Entero
 	instanceVariableNames: 'value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:49:00'!
 * aMultiplier 
 	
-	^self class with: value * aMultiplier integerValue
+	^aMultiplier beMultipliedByEntero: self
 	! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:13'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:31:39'!
 + anAdder 
 	
-	^self class with: value + anAdder integerValue
+	^anAdder beAddedToEntero: self
 ! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:40:37'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 12:17:04'!
 - aSubtrahend 
 	
-	^ self class with: value - aSubtrahend integerValue.! !
+	^self + aSubtrahend negated! !
 
-!Entero methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 12:03:46'!
 / aDivisor 
 	
-	^Fraccion with: self over: aDivisor! !
+	^aDivisor beDividedByEntero: self! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:31:39'!
+beAddedToEntero: anEntero
+
+^self class with: value + anEntero integerValue! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:33:40'!
+beAddedToFraccion: aFraccion
+
+^( aFraccion denominator * self + aFraccion numerator) / (aFraccion denominator)! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 12:03:00'!
+beDividedByEntero: anEntero
+
+	^Fraccion with: anEntero over: self! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 12:06:49'!
+beDividedByFraccion: aFraccion
+
+	^aFraccion numerator / (self * aFraccion denominator)! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:47:08'!
+beMultipliedByEntero: anEntero
+
+	^self class with: value * anEntero integerValue! !
+
+!Entero methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:50:32'!
+beMultipliedByFraccion: aFraccion
+
+	^( aFraccion numerator * self ) / (aFraccion denominator) ! !
 
 !Entero methodsFor: 'arithmetic operations' stamp: 'HAW 9/24/2018 08:47:50'!
 fibonacci
@@ -460,7 +490,7 @@ greatestCommonDivisorWith: anEntero
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Entero class' category: #'Numeros-Parte2-Ejercicio'!
+!classDefinition: 'Entero class' category: 'Numeros-Parte2-Ejercicio'!
 Entero class
 	instanceVariableNames: ''!
 
@@ -477,44 +507,77 @@ with: aValue
 	^self new initalizeWith: aValue! !
 
 
-!classDefinition: #Fraccion category: #'Numeros-Parte2-Ejercicio'!
+!classDefinition: #Fraccion category: 'Numeros-Parte2-Ejercicio'!
 Numero subclass: #Fraccion
-	instanceVariableNames: 'numerator denominator'
+	instanceVariableNames: 'numerator denominator value'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Numeros-Parte2-Ejercicio'!
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:59:25'!
 * aMultiplier 
 	
-	^(numerator * aMultiplier numerator) / (denominator * aMultiplier denominator)
+	^aMultiplier beMultipliedByFraccion: self
 	! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/27/2021 20:45:53'!
 + anAdder 
 	
 	| newNumerator newDenominator |
 	
-	newNumerator := (numerator * anAdder denominator) + (denominator * anAdder numerator).
-	newDenominator := denominator * anAdder denominator.
-	
-	^newNumerator / newDenominator ! !
+	(anAdder isKindOf: Entero) ifTrue: [^( self denominator * anAdder + self numerator) / (self denominator) ].
+	(anAdder isKindOf: Fraccion) ifTrue: [newNumerator := (numerator * anAdder denominator) 
+		+ (denominator * anAdder numerator).
+		newDenominator := denominator * anAdder denominator.
+		^newNumerator / newDenominator 
+	].
+	^self error: 'No es entero ni fraccion'! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'NR 9/23/2018 23:43:50'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 12:17:17'!
 - aSubtrahend 
 	
-	| newNumerator newDenominator |
-	
-	newNumerator := (numerator * aSubtrahend denominator) - (denominator * aSubtrahend numerator).
-	newDenominator := denominator * aSubtrahend denominator.
-	
-	^newNumerator / newDenominator 
+	^self + aSubtrahend negated
 ! !
 
-!Fraccion methodsFor: 'arithmetic operations' stamp: 'HernanWilkinson 5/7/2016 23:14'!
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 12:07:22'!
 / aDivisor 
 	
-	^(numerator * aDivisor denominator) / (denominator * aDivisor numerator)! !
+	^aDivisor beDividedByFraccion: self! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:31:39'!
+beAddedToEntero: anEntero
+
+^( denominator * anEntero + numerator) / (denominator)! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:37:17'!
+beAddedToFraccion: aFraccion
+
+|newNumerator newDenominator|
+
+	newNumerator := (numerator * aFraccion denominator) 
+		+ (denominator * aFraccion numerator).
+	newDenominator := denominator * aFraccion denominator.
+	^newNumerator / newDenominator ! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 12:01:26'!
+beDividedByEntero: anEntero
+
+	^( denominator * anEntero) / (numerator) ! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 12:05:43'!
+beDividedByFraccion: aFraccion
+
+	^(aFraccion numerator * denominator) / (aFraccion denominator * numerator)! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:43:06'!
+beMultipliedByEntero: anEntero
+
+	^( self numerator * anEntero ) / (self denominator) ! !
+
+!Fraccion methodsFor: 'arithmetic operations' stamp: 'FV 5/29/2021 11:51:28'!
+beMultipliedByFraccion: aFraccion
+
+	^(numerator * aFraccion numerator) / (denominator * aFraccion denominator)! !
 
 
 !Fraccion methodsFor: 'comparing' stamp: 'HernanWilkinson 5/7/2016 20:42'!
@@ -576,7 +639,7 @@ printOn: aStream
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'Fraccion class' category: #'Numeros-Parte2-Ejercicio'!
+!classDefinition: 'Fraccion class' category: 'Numeros-Parte2-Ejercicio'!
 Fraccion class
 	instanceVariableNames: ''!
 
