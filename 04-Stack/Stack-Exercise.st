@@ -1,4 +1,4 @@
-!classDefinition: #OOStackTest category: #'Stack-Exercise'!
+!classDefinition: #OOStackTest category: 'Stack-Exercise'!
 TestCase subclass: #OOStackTest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -137,7 +137,7 @@ test10CanNotTopWhenThereAreNoObjectsInTheStack
 ! !
 
 
-!classDefinition: #SentenceFinderByPrefixTest category: #'Stack-Exercise'!
+!classDefinition: #SentenceFinderByPrefixTest category: 'Stack-Exercise'!
 TestCase subclass: #SentenceFinderByPrefixTest
 	instanceVariableNames: ''
 	classVariableNames: ''
@@ -145,16 +145,49 @@ TestCase subclass: #SentenceFinderByPrefixTest
 	category: 'Stack-Exercise'!
 
 
-!classDefinition: #OOStack category: #'Stack-Exercise'!
+!classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: ''
+	instanceVariableNames: 'coleccion'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
+!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 12:43:00'!
+initialize
+	coleccion := OrderedCollection new.! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 12:38:56'!
+isEmpty
+	^coleccion isEmpty ! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 13:07:17'!
+pop
+	|lastElement|
+	
+	self isEmpty ifTrue: [^self error: OOStack stackEmptyErrorDescription].
+	
+	lastElement := self top.
+	coleccion removeLast.
+	
+	^lastElement! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 12:42:30'!
+push: anElement	
+
+	coleccion add: anElement! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 13:12:39'!
+size
+	^coleccion size! !
+
+!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 13:32:48'!
+top
+	self isEmpty ifTrue: [^self error: OOStack stackEmptyErrorDescription].
+	^coleccion last ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
-!classDefinition: 'OOStack class' category: #'Stack-Exercise'!
+!classDefinition: 'OOStack class' category: 'Stack-Exercise'!
 OOStack class
 	instanceVariableNames: ''!
 
@@ -163,8 +196,9 @@ stackEmptyErrorDescription
 	
 	^ 'Stack is empty'! !
 
+
 
-!classDefinition: #SentenceFinderByPrefix category: #'Stack-Exercise'!
+!classDefinition: #SentenceFinderByPrefix category: 'Stack-Exercise'!
 Object subclass: #SentenceFinderByPrefix
 	instanceVariableNames: ''
 	classVariableNames: ''
