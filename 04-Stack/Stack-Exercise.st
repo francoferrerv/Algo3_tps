@@ -147,43 +147,42 @@ TestCase subclass: #SentenceFinderByPrefixTest
 
 !classDefinition: #OOStack category: 'Stack-Exercise'!
 Object subclass: #OOStack
-	instanceVariableNames: 'coleccion'
+	instanceVariableNames: 'topElement'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 12:43:00'!
+!OOStack methodsFor: 'initialization' stamp: 'jb 6/8/2021 11:46:48'!
 initialize
-	coleccion := OrderedCollection new.! !
+	topElement := Base new.! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 12:38:56'!
+
+!OOStack methodsFor: 'testing' stamp: 'jb 6/8/2021 11:46:35'!
 isEmpty
-	^coleccion isEmpty ! !
+	^topElement isEmpty ! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 13:07:17'!
+
+!OOStack methodsFor: 'operations' stamp: 'jb 6/8/2021 11:50:18'!
 pop
 	|lastElement|
 	
-	self isEmpty ifTrue: [^self error: OOStack stackEmptyErrorDescription].
-	
 	lastElement := self top.
-	coleccion removeLast.
+	topElement := topElement previousStackableElement.
 	
 	^lastElement! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 12:42:30'!
+!OOStack methodsFor: 'operations' stamp: 'jb 6/8/2021 11:50:58'!
 push: anElement	
+	topElement := StackableElement containing: anElement withPrevious: topElement.! !
 
-	coleccion add: anElement! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 13:12:39'!
+!OOStack methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:44:12'!
 size
-	^coleccion size! !
+	^topElement size! !
 
-!OOStack methodsFor: 'as yet unclassified' stamp: 'jb 6/6/2021 13:32:48'!
+!OOStack methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:43:14'!
 top
-	self isEmpty ifTrue: [^self error: OOStack stackEmptyErrorDescription].
-	^coleccion last ! !
+	^topElement content! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -204,3 +203,65 @@ Object subclass: #SentenceFinderByPrefix
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
+
+
+!classDefinition: #StackableElement category: 'Stack-Exercise'!
+Object subclass: #StackableElement
+	instanceVariableNames: 'content previousStackableElement'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!StackableElement methodsFor: 'initialization' stamp: 'jb 6/8/2021 11:56:23'!
+initializeContaining: aNewElement withPrevious: aPreviousElement
+	content := aNewElement.
+	previousStackableElement := aPreviousElement.! !
+
+
+!StackableElement methodsFor: 'testing' stamp: 'jb 6/8/2021 11:46:18'!
+isEmpty
+	^false! !
+
+
+!StackableElement methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:49:26'!
+content
+	^content! !
+
+!StackableElement methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:49:16'!
+previousStackableElement
+	^previousStackableElement ! !
+
+!StackableElement methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:45:39'!
+size
+	^1 + previousStackableElement size! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'StackableElement class' category: 'Stack-Exercise'!
+StackableElement class
+	instanceVariableNames: ''!
+
+!StackableElement class methodsFor: 'as yet unclassified' stamp: 'jb 6/8/2021 11:55:07'!
+containing: aNewElement withPrevious: aPreviousElement
+	^StackableElement new initializeContaining: aNewElement withPrevious: aPreviousElement.! !
+
+
+!classDefinition: #Base category: 'Stack-Exercise'!
+StackableElement subclass: #Base
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'Stack-Exercise'!
+
+!Base methodsFor: 'testing' stamp: 'jb 6/8/2021 11:46:06'!
+isEmpty
+	^true! !
+
+
+!Base methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:43:30'!
+content
+	^self error: OOStack stackEmptyErrorDescription! !
+
+!Base methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:45:52'!
+size
+	^0! !
