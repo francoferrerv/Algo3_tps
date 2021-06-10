@@ -316,7 +316,12 @@ Object subclass: #Sentence
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!Sentence methodsFor: 'as yet unclassified' stamp: 'jb 6/10/2021 15:13:04'!
+!Sentence methodsFor: 'initialization' stamp: 'jb 6/10/2021 16:36:36'!
+initializeWithSentence: aSentence
+	self subclassResponsibility! !
+
+
+!Sentence methodsFor: 'operations' stamp: 'jb 6/10/2021 15:13:04'!
 addToOrderedCollection: aCollection
 	self subclassResponsibility ! !
 
@@ -338,11 +343,12 @@ Sentence subclass: #SentenceWithPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceWithPrefix methodsFor: 'as yet unclassified' stamp: 'jb 6/9/2021 13:24:37'!
+!SentenceWithPrefix methodsFor: 'operations' stamp: 'jb 6/9/2021 13:24:37'!
 addToOrderedCollection: aCollection
 	aCollection add: content! !
 
-!SentenceWithPrefix methodsFor: 'as yet unclassified' stamp: 'jb 6/9/2021 13:17:44'!
+
+!SentenceWithPrefix methodsFor: 'initialization' stamp: 'jb 6/9/2021 13:17:44'!
 initializeWithSentence: aSentence
 	content := aSentence! !
 
@@ -364,10 +370,11 @@ Sentence subclass: #SentenceWithoutPrefix
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!SentenceWithoutPrefix methodsFor: 'as yet unclassified' stamp: 'jb 6/9/2021 13:24:04'!
+!SentenceWithoutPrefix methodsFor: 'operations' stamp: 'jb 6/9/2021 13:24:04'!
 addToOrderedCollection: aCollection! !
 
-!SentenceWithoutPrefix methodsFor: 'as yet unclassified' stamp: 'jb 6/9/2021 13:18:33'!
+
+!SentenceWithoutPrefix methodsFor: 'initialization' stamp: 'jb 6/9/2021 13:18:33'!
 initializeWithSentence: aSentence
 	content := aSentence! !
 
@@ -476,26 +483,28 @@ Object subclass: #StackableElement
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!StackableElement methodsFor: 'nil' stamp: 'jb 6/8/2021 11:49:26'!
-content
-	^content! !
-
-!StackableElement methodsFor: 'nil' stamp: 'jb 6/8/2021 11:56:23'!
-initializeContaining: aNewElement withPrevious: aPreviousElement
-	content := aNewElement.
-	previousStackableElement := aPreviousElement.! !
-
-!StackableElement methodsFor: 'nil' stamp: 'jb 6/8/2021 11:46:18'!
+!StackableElement methodsFor: 'checks' stamp: 'jb 6/8/2021 11:46:18'!
 isEmpty
 	^false! !
 
-!StackableElement methodsFor: 'nil' stamp: 'jb 6/8/2021 11:49:16'!
+
+!StackableElement methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:49:26'!
+content
+	^content! !
+
+!StackableElement methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:49:16'!
 previousStackableElement
 	^previousStackableElement ! !
 
-!StackableElement methodsFor: 'nil' stamp: 'jb 6/8/2021 11:45:39'!
+!StackableElement methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:45:39'!
 size
 	^1 + previousStackableElement size! !
+
+
+!StackableElement methodsFor: 'initialization' stamp: 'jb 6/8/2021 11:56:23'!
+initializeContaining: aNewElement withPrevious: aPreviousElement
+	content := aNewElement.
+	previousStackableElement := aPreviousElement.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -515,14 +524,15 @@ StackableElement subclass: #Base
 	poolDictionaries: ''
 	category: 'Stack-Exercise'!
 
-!Base methodsFor: 'as yet unclassified' stamp: 'jb 6/8/2021 11:43:30'!
+!Base methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:43:30'!
 content
 	^self error: OOStack stackEmptyErrorDescription! !
 
-!Base methodsFor: 'as yet unclassified' stamp: 'jb 6/8/2021 11:46:06'!
-isEmpty
-	^true! !
-
-!Base methodsFor: 'as yet unclassified' stamp: 'jb 6/8/2021 11:45:52'!
+!Base methodsFor: 'accessing' stamp: 'jb 6/8/2021 11:45:52'!
 size
 	^0! !
+
+
+!Base methodsFor: 'checks' stamp: 'jb 6/8/2021 11:46:06'!
+isEmpty
+	^true! !
