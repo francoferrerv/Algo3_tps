@@ -1,6 +1,6 @@
 !classDefinition: #TestsMarsRover category: 'MarsRover'!
 TestCase subclass: #TestsMarsRover
-	instanceVariableNames: 'roverAtOriginFacingNorth'
+	instanceVariableNames: 'roverAtOriginFacingNorth roverAtx3y3FacingNorth roverAtOriginFacingEast roverAtx2y5FacingSouth'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
@@ -24,10 +24,13 @@ assertThatRover: aRover withCommands: aStringOfCommands endsAtPosition: aPoint a
 	self assert: isFacingBlock value.! !
 
 
-!TestsMarsRover methodsFor: 'setUp/tearDown' stamp: 'jb 7/1/2021 11:35:12'!
+!TestsMarsRover methodsFor: 'setUp/tearDown' stamp: 'jb 7/1/2021 17:28:30'!
 setUp
 	
-	roverAtOriginFacingNorth _ MarsRover facing: 'N' positionedAt: (0@0).! !
+	roverAtOriginFacingNorth _ MarsRover facing: 'N' positionedAt: (0@0).
+	roverAtOriginFacingEast _ MarsRover facing: 'E' positionedAt: (0@0).
+	roverAtx3y3FacingNorth _ MarsRover facing: 'N' positionedAt: (3@3).
+	roverAtx2y5FacingSouth _ MarsRover facing: 'S' positionedAt: (2@5).! !
 
 
 !TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:24:14'!
@@ -41,19 +44,6 @@ test01RoverWithNoCommandsDoesntDoAnything
 		endsAtPosition: (0@0)
 		andSatisfiesThat: [rover isFacingNorth].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:41:28'!
-test02BisRoverAtOriginWhenCommandedToMoveForwardMovesForwardAndDoesntStayAtOrigin
-	
-	| rover |
-	rover _ roverAtOriginFacingNorth.
-	
-	self assertThatRover: rover
-		withCommands: 'f'
-		endsAtPosition: (0@1)
-		andSatisfiesThat: [rover isFacingNorth].
-	
-	self deny: (rover positionIs: 0@0).! !
-
 !TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:41:39'!
 test02RoverAtOriginWhenCommandedToMoveForwardMovesForward
 	
@@ -65,8 +55,21 @@ test02RoverAtOriginWhenCommandedToMoveForwardMovesForward
 		endsAtPosition: (0@1)
 		andSatisfiesThat: [rover isFacingNorth].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:39:20'!
-test03RoverAtOriginWhenCommandedToMoveBackMovesBack
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:53'!
+test03RoverAtOriginWhenCommandedToMoveForwardMovesForwardAndDoesntStayAtOrigin
+	
+	| rover |
+	rover _ roverAtOriginFacingNorth.
+	
+	self assertThatRover: rover
+		withCommands: 'f'
+		endsAtPosition: (0@1)
+		andSatisfiesThat: [rover isFacingNorth].
+	
+	self deny: (rover positionIs: 0@0).! !
+
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:46'!
+test04RoverAtOriginWhenCommandedToMoveBackMovesBack
 	| rover |
 	
 	rover _ roverAtOriginFacingNorth.
@@ -76,8 +79,8 @@ test03RoverAtOriginWhenCommandedToMoveBackMovesBack
 		endsAtPosition: (0@-1)
 		andSatisfiesThat: [rover isFacingNorth].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:35:23'!
-test04RoverFacingNorthWhenCommandedToTurnRightFacesEast
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:43'!
+test05RoverFacingNorthWhenCommandedToTurnRightFacesEast
 	
 	| rover |
 	rover _ roverAtOriginFacingNorth.
@@ -87,8 +90,8 @@ test04RoverFacingNorthWhenCommandedToTurnRightFacesEast
 		endsAtPosition: (0@0)
 		andSatisfiesThat: [rover isFacingEast].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:35:52'!
-test05RoverFacingNorthWhenCommandedToTurnRightOnlyFacesEast
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:39'!
+test06RoverFacingNorthWhenCommandedToTurnRightOnlyFacesEast
 	
 	| rover |
 	rover _ roverAtOriginFacingNorth.
@@ -102,8 +105,8 @@ test05RoverFacingNorthWhenCommandedToTurnRightOnlyFacesEast
 	self deny: (rover isFacingSouth).
 	self deny: (rover isFacingWest).! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:36:13'!
-test06RoverFacingNorthWhenCommandedToTurnLeftFacesWest
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:35'!
+test07RoverFacingNorthWhenCommandedToTurnLeftFacesWest
 	
 	| rover |
 	rover _ roverAtOriginFacingNorth.
@@ -113,30 +116,30 @@ test06RoverFacingNorthWhenCommandedToTurnLeftFacesWest
 		endsAtPosition: (0@0)
 		andSatisfiesThat: [rover isFacingWest].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 11:35:12'!
-test07RoverFacingEastWhenCommandedToTurnRightFacesSouth
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:31'!
+test08RoverFacingEastWhenCommandedToTurnRightFacesSouth
 	
 	| rover |
-	rover := MarsRover facing: 'E' positionedAt: (0@0).
+	rover := roverAtOriginFacingEast.
 	
 	self assertThatRover: rover
 		withCommands: 'r'
 		endsAtPosition: (0@0)
 		andSatisfiesThat: [rover isFacingSouth].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 11:35:12'!
-test08RoverNotAtOriginWhenCommandedTomoveForwardMovesForward
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:27'!
+test09RoverNotAtOriginWhenCommandedTomoveForwardMovesForward
 	
 	| rover |
-	rover := MarsRover facing: 'N' positionedAt: (3@3).
+	rover _ roverAtx3y3FacingNorth.
 	
 	self assertThatRover: rover
 		withCommands: 'f'
 		endsAtPosition: (3@4)
 		andSatisfiesThat: [rover isFacingNorth].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:21:15'!
-test09RoverRaisesExceptionOnUnkownCommand
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:22'!
+test10RoverRaisesExceptionOnUnkownCommand
 	
 	| rover |
 	rover _ roverAtOriginFacingNorth.
@@ -146,8 +149,8 @@ test09RoverRaisesExceptionOnUnkownCommand
 		endAtPosition: (0@0)
 		andSatisfiesThat: [rover isFacingNorth].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:38:00'!
-test10RoverWhenGivenCommandWithMoreThanOneInstructionFollowsAccordingly
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:18'!
+test11RoverWhenGivenCommandWithMoreThanOneInstructionFollowsAccordingly
 	
 	| rover |
 	rover _ roverAtOriginFacingNorth.
@@ -157,16 +160,25 @@ test10RoverWhenGivenCommandWithMoreThanOneInstructionFollowsAccordingly
 		endsAtPosition: (0@2)
 		andSatisfiesThat: [rover isFacingNorth].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 11:35:12'!
-test11RoverStopsExecutingCommandsAfterUnknownCommand
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:34:14'!
+test12RoverStopsExecutingCommandsAfterUnknownCommand
 	
 	| rover |
-	rover := MarsRover facing: 'S' positionedAt: (2@5).
+	rover := roverAtx2y5FacingSouth.
 	
 	self assertThatRover: rover
 		raisesErrorOnCommand: 'ffrfxflbrb'
 		endAtPosition: (1@3)
 		andSatisfiesThat: [rover isFacingWest].! !
+
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:58:07'!
+test13RoverWhenGivenBadDirectionRaisesErrorOnCommand
+	
+	| rover |
+	rover := MarsRover facing: 'X' positionedAt: 0@0.
+	
+	self should: [rover processCommands: 'f']
+	raise: Error! !
 
 
 !classDefinition: #MarsRover category: 'MarsRover'!
@@ -302,13 +314,23 @@ rightDirection
 MarsRoverNavigationSystem class
 	instanceVariableNames: ''!
 
-!MarsRoverNavigationSystem class methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:09:39'!
+!MarsRoverNavigationSystem class methodsFor: 'private' stamp: 'jb 7/1/2021 12:09:39'!
 canHandle: aDirection
 	self subclassResponsibility.! !
 
-!MarsRoverNavigationSystem class methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:19:56'!
+!MarsRoverNavigationSystem class methodsFor: 'private' stamp: 'jb 7/1/2021 17:56:45'!
+raiseUnknownDirectionError
+	^self error: self unknownDirectionErrorMessage! !
+
+
+!MarsRoverNavigationSystem class methodsFor: 'error messages' stamp: 'jb 7/1/2021 17:32:06'!
+unknownDirectionErrorMessage
+	^'Unkown direction given'! !
+
+
+!MarsRoverNavigationSystem class methodsFor: 'creation' stamp: 'jb 7/1/2021 17:56:14'!
 withRoverFacing: aDirection
-	^(self subclasses detect: [:subclass | subclass canHandle: aDirection]) new.! !
+	^(self subclasses detect: [:element | element canHandle: aDirection] ifNone: [^self raiseUnknownDirectionError ]) new.! !
 
 
 !classDefinition: #MarsRoverIsFacingEast category: 'MarsRover'!
@@ -337,7 +359,7 @@ rightDirection
 MarsRoverIsFacingEast class
 	instanceVariableNames: ''!
 
-!MarsRoverIsFacingEast class methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:10:02'!
+!MarsRoverIsFacingEast class methodsFor: 'private' stamp: 'jb 7/1/2021 12:10:02'!
 canHandle: aDirection
 	^aDirection = 'E'! !
 
@@ -368,7 +390,7 @@ rightDirection
 MarsRoverIsFacingNorth class
 	instanceVariableNames: ''!
 
-!MarsRoverIsFacingNorth class methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:10:33'!
+!MarsRoverIsFacingNorth class methodsFor: 'private' stamp: 'jb 7/1/2021 12:10:33'!
 canHandle: aDirection
 	^aDirection = 'N'! !
 
@@ -399,7 +421,7 @@ rightDirection
 MarsRoverIsFacingSouth class
 	instanceVariableNames: ''!
 
-!MarsRoverIsFacingSouth class methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:10:40'!
+!MarsRoverIsFacingSouth class methodsFor: 'private' stamp: 'jb 7/1/2021 12:10:40'!
 canHandle: aDirection
 	^aDirection = 'S'! !
 
@@ -430,6 +452,6 @@ rightDirection
 MarsRoverIsFacingWest class
 	instanceVariableNames: ''!
 
-!MarsRoverIsFacingWest class methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:10:47'!
+!MarsRoverIsFacingWest class methodsFor: 'private' stamp: 'jb 7/1/2021 12:10:47'!
 canHandle: aDirection
 	^aDirection = 'W'! !
