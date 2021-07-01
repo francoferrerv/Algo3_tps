@@ -1,6 +1,6 @@
 !classDefinition: #TestsMarsRover category: 'MarsRover'!
 TestCase subclass: #TestsMarsRover
-	instanceVariableNames: 'roverAtOriginFacingNorth roverAtx3y3FacingNorth roverAtOriginFacingEast roverAtx2y5FacingSouth'
+	instanceVariableNames: 'roverAtOriginFacingNorth roverAtx3y3FacingNorth roverAtOriginFacingEast roverAtx2y5FacingSouth roverAtOriginWithBadDirection'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover'!
@@ -24,13 +24,14 @@ assertThatRover: aRover withCommands: aStringOfCommands endsAtPosition: aPoint a
 	self assert: isFacingBlock value.! !
 
 
-!TestsMarsRover methodsFor: 'setUp/tearDown' stamp: 'jb 7/1/2021 17:28:30'!
+!TestsMarsRover methodsFor: 'setUp/tearDown' stamp: 'jb 7/1/2021 18:03:05'!
 setUp
 	
 	roverAtOriginFacingNorth _ MarsRover facing: 'N' positionedAt: (0@0).
 	roverAtOriginFacingEast _ MarsRover facing: 'E' positionedAt: (0@0).
 	roverAtx3y3FacingNorth _ MarsRover facing: 'N' positionedAt: (3@3).
-	roverAtx2y5FacingSouth _ MarsRover facing: 'S' positionedAt: (2@5).! !
+	roverAtx2y5FacingSouth _ MarsRover facing: 'S' positionedAt: (2@5).
+	roverAtOriginWithBadDirection _ MarsRover facing: 'X' positionedAt: 0@0.! !
 
 
 !TestsMarsRover methodsFor: 'tests' stamp: 'jb 6/30/2021 12:24:14'!
@@ -171,11 +172,11 @@ test12RoverStopsExecutingCommandsAfterUnknownCommand
 		endAtPosition: (1@3)
 		andSatisfiesThat: [rover isFacingWest].! !
 
-!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 17:58:07'!
+!TestsMarsRover methodsFor: 'tests' stamp: 'jb 7/1/2021 18:02:52'!
 test13RoverWhenGivenBadDirectionRaisesErrorOnCommand
 	
 	| rover |
-	rover := MarsRover facing: 'X' positionedAt: 0@0.
+	rover := roverAtOriginWithBadDirection.
 	
 	self should: [rover processCommands: 'f']
 	raise: Error! !
