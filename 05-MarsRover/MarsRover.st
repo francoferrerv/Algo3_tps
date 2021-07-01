@@ -279,19 +279,20 @@ Object subclass: #MarsRoverNavigationSystem
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverNavigationSystem methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:13:13'!
+!MarsRoverNavigationSystem methodsFor: 'vectors' stamp: 'jb 7/1/2021 12:13:13'!
 backwardsVector
 	^self forwardVector * -1! !
 
-!MarsRoverNavigationSystem methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:12:51'!
+!MarsRoverNavigationSystem methodsFor: 'vectors' stamp: 'jb 7/1/2021 12:12:51'!
 forwardVector
 	self subclassResponsibility.! !
 
-!MarsRoverNavigationSystem methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:14:21'!
+
+!MarsRoverNavigationSystem methodsFor: 'directions' stamp: 'jb 7/1/2021 12:14:21'!
 leftDirection
 	self subclassResponsibility.! !
 
-!MarsRoverNavigationSystem methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:14:34'!
+!MarsRoverNavigationSystem methodsFor: 'directions' stamp: 'jb 7/1/2021 12:14:34'!
 rightDirection
 	self subclassResponsibility.! !
 
@@ -317,15 +318,16 @@ MarsRoverNavigationSystem subclass: #MarsRoverIsFacingEast
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverIsFacingEast methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:12:51'!
+!MarsRoverIsFacingEast methodsFor: 'vectors' stamp: 'jb 7/1/2021 12:12:51'!
 forwardVector
 	^(1@0)! !
 
-!MarsRoverIsFacingEast methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:15:04'!
+
+!MarsRoverIsFacingEast methodsFor: 'directions' stamp: 'jb 7/1/2021 12:15:04'!
 leftDirection
 	^'N'! !
 
-!MarsRoverIsFacingEast methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:16:22'!
+!MarsRoverIsFacingEast methodsFor: 'directions' stamp: 'jb 7/1/2021 12:16:22'!
 rightDirection
 	^'S'! !
 
@@ -347,15 +349,16 @@ MarsRoverNavigationSystem subclass: #MarsRoverIsFacingNorth
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverIsFacingNorth methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:12:51'!
+!MarsRoverIsFacingNorth methodsFor: 'vectors' stamp: 'jb 7/1/2021 12:12:51'!
 forwardVector
 	^(0@1)! !
 
-!MarsRoverIsFacingNorth methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:15:37'!
+
+!MarsRoverIsFacingNorth methodsFor: 'directions' stamp: 'jb 7/1/2021 12:15:37'!
 leftDirection
 	^'W'! !
 
-!MarsRoverIsFacingNorth methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:16:37'!
+!MarsRoverIsFacingNorth methodsFor: 'directions' stamp: 'jb 7/1/2021 12:16:37'!
 rightDirection
 	^'E'! !
 
@@ -377,15 +380,16 @@ MarsRoverNavigationSystem subclass: #MarsRoverIsFacingSouth
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverIsFacingSouth methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:12:51'!
+!MarsRoverIsFacingSouth methodsFor: 'vectors' stamp: 'jb 7/1/2021 12:12:51'!
 forwardVector
 	^(0@-1)! !
 
-!MarsRoverIsFacingSouth methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:15:26'!
+
+!MarsRoverIsFacingSouth methodsFor: 'directions' stamp: 'jb 7/1/2021 12:15:26'!
 leftDirection
 	^'E'! !
 
-!MarsRoverIsFacingSouth methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:16:48'!
+!MarsRoverIsFacingSouth methodsFor: 'directions' stamp: 'jb 7/1/2021 12:16:48'!
 rightDirection
 	^'W'! !
 
@@ -407,15 +411,16 @@ MarsRoverNavigationSystem subclass: #MarsRoverIsFacingWest
 	poolDictionaries: ''
 	category: 'MarsRover'!
 
-!MarsRoverIsFacingWest methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:12:51'!
+!MarsRoverIsFacingWest methodsFor: 'vectors' stamp: 'jb 7/1/2021 12:12:51'!
 forwardVector
 	^(-1@0)! !
 
-!MarsRoverIsFacingWest methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:15:47'!
+
+!MarsRoverIsFacingWest methodsFor: 'directions' stamp: 'jb 7/1/2021 12:15:47'!
 leftDirection
 	^'S'! !
 
-!MarsRoverIsFacingWest methodsFor: 'as yet unclassified' stamp: 'jb 7/1/2021 12:16:56'!
+!MarsRoverIsFacingWest methodsFor: 'directions' stamp: 'jb 7/1/2021 12:16:56'!
 rightDirection
 	^'N'! !
 
