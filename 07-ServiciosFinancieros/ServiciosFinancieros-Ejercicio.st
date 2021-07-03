@@ -89,12 +89,82 @@ test07AccountKnowsItsTransactions
 ! !
 
 
+!classDefinition: #TransactionTests category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #TransactionTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransactionTests methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:39:23'!
+test01Caso0
+
+	
+
+
+	! !
+
+!TransactionTests methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:50:40'!
+test02
+
+	| account1 account2 |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Deposit register: 50 * peso on: account1.
+	Transfer register: 50 * peso from: account1 to: account2.
+	
+	self assert:(account1 balance) equals: 0 * peso.
+	self assert:(account2 balance) equals: 50 * peso. 
+	 
+
+	
+! !
+
+!TransactionTests methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 16:37:12'!
+test03
+
+	| account1 account2 transfer|
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Deposit register: 50 * peso on: account1.
+	transfer := Transfer register: 50 * peso from: account1 to: account2.
+	
+	self assert: transfer value equals: 50 * peso
+	
+	 
+
+	
+! !
+
+!TransactionTests methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:40:54'!
+test04
+
+	| account1 account2 transfer|
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	Deposit register: 50 * peso on: account1.
+	transfer := Transfer register: 50 * peso from: account1 to: account2.
+	
+	self assert:((account1 transactions at: 2) counterpart) equals: transfer deposit.
+	self assert:((account2 transactions at: 1) counterpart) equals: transfer withdraw. 
+	 
+
+	
+! !
+
+
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
 Object subclass: #AccountTransaction
 	instanceVariableNames: ''
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
+
+!AccountTransaction methodsFor: 'value' stamp: 'FV 7/2/2021 15:26:03'!
+transactionBalance
+
+	^self subclassResponsibility
+! !
 
 !AccountTransaction methodsFor: 'value' stamp: 'HernanWilkinson 9/12/2011 12:25'!
 value 
@@ -136,6 +206,12 @@ value
 
 	^ value! !
 
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:26:32'!
+transactionBalance
+
+	^self value! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Deposit class' category: 'ServiciosFinancieros-Ejercicio'!
@@ -146,6 +222,154 @@ Deposit class
 for: aValue
 
 	^ self new initializeFor: aValue ! !
+
+
+!classDefinition: #Transfer category: 'ServiciosFinancieros-Ejercicio'!
+AccountTransaction subclass: #Transfer
+	instanceVariableNames: 'value accounts'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:37:53'!
+deposit
+
+	^(accounts at: 2 ) transactions detect: [
+		:transaction| (transaction isKindOf: TransferDeposit) 
+		and:[transaction transfer = self ]].! !
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 20:52:46'!
+initializeFor: anAmount from: anAccount1 to: anAccount2
+	
+	value := anAmount.
+	accounts := OrderedCollection with: anAccount1 with: anAccount2.
+	^self! !
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 16:46:03'!
+value
+
+	^value.! !
+
+!Transfer methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:38:27'!
+withdraw
+
+	^(accounts at: 1 ) transactions detect: [
+		:transaction| (transaction isKindOf: TransferWithdraw) 
+		and:[transaction transfer = self ]]! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Transfer class' category: 'ServiciosFinancieros-Ejercicio'!
+Transfer class
+	instanceVariableNames: ''!
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 20:20:43'!
+register: anAmount from: anAccount1 to: anAccount2
+
+	| transfer |
+	
+	transfer := self new initializeFor: anAmount from: anAccount1 to: anAccount2.
+	
+	TransferWithdraw register: anAmount on: anAccount1 withTransfer: transfer.
+	TransferDeposit register: anAmount on: anAccount2 withTransfer: transfer.
+	
+	^transfer
+
+! !
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:44:31'!
+register: aValue on: account withTransfer: aTransfer
+
+	| transaction |
+	
+	transaction := self for: aValue withTransfer: aTransfer. 
+	account register: transaction.
+		
+	^transaction
+	
+	
+
+! !
+
+
+!classDefinition: #TransferDeposit category: 'ServiciosFinancieros-Ejercicio'!
+Transfer subclass: #TransferDeposit
+	instanceVariableNames: 'transfer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:38:53'!
+counterpart
+	
+	^transfer withdraw.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:41:45'!
+initializeFor: anAmount withTransfer: aTransfer
+
+	value := anAmount.
+	transfer := aTransfer.! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 20:15:34'!
+transactionBalance
+
+	^self value! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:35:02'!
+transfer
+
+	^transfer.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferDeposit class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferDeposit class
+	instanceVariableNames: ''!
+
+!TransferDeposit class methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:43:04'!
+for: anAmount withTransfer: aTransfer
+
+	^self new initializeFor: anAmount withTransfer: aTransfer.! !
+
+
+!classDefinition: #TransferWithdraw category: 'ServiciosFinancieros-Ejercicio'!
+Transfer subclass: #TransferWithdraw
+	instanceVariableNames: 'transfer'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:39:04'!
+counterpart
+	
+	^transfer deposit.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:42:04'!
+initializeFor: anAmount withTransfer: aTransfer
+
+	value := anAmount.
+	transfer := aTransfer.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 20:15:42'!
+transactionBalance
+
+	^self value * -1! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:35:11'!
+transfer
+
+	^transfer.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'TransferWithdraw class' category: 'ServiciosFinancieros-Ejercicio'!
+TransferWithdraw class
+	instanceVariableNames: ''!
+
+!TransferWithdraw class methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:43:22'!
+for: anAmount withTransfer: aTransfer
+
+	^self new initializeFor: anAmount withTransfer: aTransfer.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros-Ejercicio'!
@@ -161,10 +385,16 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Withdraw methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:33'!
+!Withdraw methodsFor: 'value' stamp: 'FV 7/2/2021 15:18:06'!
 value
 
 	^ value! !
+
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:26:42'!
+transactionBalance
+
+	^self value * -1! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -191,10 +421,10 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'HAW 5/23/2019 15:19:32'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'FV 7/2/2021 15:27:01'!
 balance
 
-	^transactions sum: [ :aTransaction | aTransaction value ] ifEmpty: [ 0 ]! !
+	^transactions sum: [ :aTransaction | aTransaction transactionBalance ] ifEmpty: [ 0 ]! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
