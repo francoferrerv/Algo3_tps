@@ -1,3 +1,88 @@
+!classDefinition: #PortfolioTests category: 'ServiciosFinancieros-Ejercicio'!
+TestCase subclass: #PortfolioTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:13:35'!
+test01
+
+	| portfolio |
+	portfolio := Portfolio new.
+	
+	self assert: 0 * peso equals: portfolio balance.
+	
+	! !
+
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:13:00'!
+test02
+
+	| portfolio account |
+	account := ReceptiveAccount new.
+	Deposit register: 50 * peso  on: account.
+	portfolio := Portfolio new.
+	portfolio addAccount: account.
+	
+	self assert: 50 * peso equals: portfolio balance .
+	
+	! !
+
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:12:33'!
+test03
+
+	| portfolio account1 account2 |
+	account1 := ReceptiveAccount new.
+	Deposit register: 100 * peso  on: account1.
+	account2 := ReceptiveAccount new.
+	Deposit register: 200 * peso  on: account2.
+	portfolio := Portfolio new.
+	portfolio addAccount: account1.
+	portfolio addAccount: account2.
+	
+	self assert: 300 * peso equals: portfolio balance.
+	
+	! !
+
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:23:43'!
+test04
+
+	| portfolio account1 account2 deposit1 deposit2 withdraw |
+	account1 := ReceptiveAccount new.
+	 deposit1 := Deposit register: 100 * peso  on: account1.
+	account2 := ReceptiveAccount new.
+	deposit2 :=Deposit register: 200 * peso  on: account2.
+	withdraw := Withdraw register: 200 * peso  on: account2.
+	portfolio := Portfolio new.
+	portfolio addAccount: account1.
+	portfolio addAccount: account2.
+	
+	self assert:  (portfolio hasRegistered: deposit1).
+	self assert:  (portfolio hasRegistered: deposit2).
+	self assert:  (portfolio hasRegistered: withdraw).
+	
+	! !
+
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:24:37'!
+test05
+
+	| portfolio account1 account2 deposit1 deposit2 withdraw |
+	account1 := ReceptiveAccount new.
+	 deposit1 := Deposit register: 100 * peso  on: account1.
+	account2 := ReceptiveAccount new.
+	deposit2 :=Deposit register: 200 * peso  on: account2.
+	withdraw := Withdraw register: 200 * peso  on: account2.
+	portfolio := Portfolio new.
+
+	portfolio addAccount: account2.
+	
+	self deny: (portfolio hasRegistered: deposit1).
+	self assert:  (portfolio hasRegistered: deposit2).
+	self assert:  (portfolio hasRegistered: withdraw).
+	
+	! !
+
+
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -258,6 +343,41 @@ Withdraw class
 for: aValue
 
 	^ self new initializeFor: aValue ! !
+
+
+!classDefinition: #Portfolio category: 'ServiciosFinancieros-Ejercicio'!
+Object subclass: #Portfolio
+	instanceVariableNames: 'accounts'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros-Ejercicio'!
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:06:53'!
+addAccount: anAccount
+
+	accounts add: anAccount.
+
+	
+
+	! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:15:01'!
+balance
+	
+	accounts ifEmpty:[^0* peso].
+	
+	^accounts sum:[:account| account balance].! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:28:31'!
+hasRegistered: aTransaction
+
+	accounts do:[:account| (account hasRegistered: aTransaction) ifTrue: [^true]].
+	^false.! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:06:10'!
+initialize
+
+	accounts := OrderedCollection new.! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
