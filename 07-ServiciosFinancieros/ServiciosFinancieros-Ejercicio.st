@@ -245,16 +245,16 @@ Object subclass: #AccountTransaction
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!AccountTransaction methodsFor: 'value' stamp: 'FV 7/2/2021 15:26:03'!
-transactionBalance
-
-	^self subclassResponsibility
-! !
-
 !AccountTransaction methodsFor: 'value' stamp: 'HernanWilkinson 9/12/2011 12:25'!
 value 
 
 	self subclassResponsibility ! !
+
+!AccountTransaction methodsFor: 'value' stamp: 'jb 7/6/2021 10:54:50'!
+valueForBalance: aPartialBalance
+
+	^self subclassResponsibility
+! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -292,10 +292,10 @@ value
 	^ value! !
 
 
-!Deposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:26:32'!
-transactionBalance
+!Deposit methodsFor: 'as yet unclassified' stamp: 'jb 7/6/2021 10:55:18'!
+valueForBalance: aPartialBalance
 
-	^self value! !
+	^aPartialBalance + self value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -328,10 +328,10 @@ value
 	^ value! !
 
 
-!Withdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:26:42'!
-transactionBalance
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/6/2021 10:55:42'!
+valueForBalance: aPartialBalance
 
-	^self value * -1! !
+	^aPartialBalance - self value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -393,10 +393,10 @@ initialize
 	transactions := OrderedCollection new.! !
 
 
-!ReceptiveAccount methodsFor: 'main protocol' stamp: 'FV 7/2/2021 15:27:01'!
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'jb 7/6/2021 10:59:19'!
 balance
 
-	^transactions sum: [ :aTransaction | aTransaction transactionBalance ] ifEmpty: [ 0 ]! !
+	^transactions inject: 0 * peso into: [:partialBalance :aTransaction | aTransaction valueForBalance: partialBalance ]! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'NR 10/17/2019 03:28:43'!
 hasRegistered: aTransaction
@@ -511,11 +511,6 @@ initializeFor: anAmount withTransfer: aTransfer
 	value := anAmount.
 	transfer := aTransfer.! !
 
-!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 20:15:34'!
-transactionBalance
-
-	^self value! !
-
 !TransferDeposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:35:02'!
 transfer
 
@@ -524,6 +519,11 @@ transfer
 !TransferDeposit methodsFor: 'as yet unclassified' stamp: 'jb 7/5/2021 20:30:02'!
 value
 	^value! !
+
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'jb 7/6/2021 10:59:42'!
+valueForBalance: aPartialBalance
+
+	^aPartialBalance + self value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -555,11 +555,6 @@ initializeFor: anAmount withTransfer: aTransfer
 	value := anAmount.
 	transfer := aTransfer.! !
 
-!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 20:15:42'!
-transactionBalance
-
-	^self value * -1! !
-
 !TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:35:11'!
 transfer
 
@@ -568,6 +563,11 @@ transfer
 !TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/5/2021 20:30:10'!
 value
 	^value! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/6/2021 11:00:05'!
+valueForBalance: aPartialBalance
+
+	^aPartialBalance - self value! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
