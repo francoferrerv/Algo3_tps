@@ -5,8 +5,8 @@ TestCase subclass: #PortfolioTests
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:13:35'!
-test01
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:04:36'!
+test01EmptyPortfolioHasBalanceZero
 
 	| portfolio |
 	portfolio := Portfolio new.
@@ -15,8 +15,8 @@ test01
 	
 	! !
 
-!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:13:00'!
-test02
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:05:46'!
+test02PortfolioWithOnlyOneAccountBalanceEqualsAccountBalance
 
 	| portfolio account |
 	account := ReceptiveAccount new.
@@ -28,8 +28,8 @@ test02
 	
 	! !
 
-!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:12:33'!
-test03
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:07:09'!
+test03PortfolioWithMultipleAccountsBalanceEqualsSumOfAccountsBalance
 
 	| portfolio account1 account2 |
 	account1 := ReceptiveAccount new.
@@ -44,8 +44,8 @@ test03
 	
 	! !
 
-!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:23:43'!
-test04
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:14:50'!
+test04PortfolioCanFindTransactionsInAccount
 
 	| portfolio account1 account2 deposit1 deposit2 withdraw |
 	account1 := ReceptiveAccount new.
@@ -63,8 +63,8 @@ test04
 	
 	! !
 
-!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/5/2021 21:24:37'!
-test05
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:12:32'!
+test05PortfolioCantFindTransactionThatIsntInAccount
 
 	| portfolio account1 account2 deposit1 deposit2 withdraw |
 	account1 := ReceptiveAccount new.
@@ -79,6 +79,66 @@ test05
 	self deny: (portfolio hasRegistered: deposit1).
 	self assert:  (portfolio hasRegistered: deposit2).
 	self assert:  (portfolio hasRegistered: withdraw).
+	
+	! !
+
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:16:08'!
+test06PortfolioWithOneAccountTransactionsEqualsAccountTransactions
+
+	| portfolio account1 deposit1 |
+	account1 := ReceptiveAccount new.
+	 deposit1 := Deposit register: 100 * peso  on: account1.
+	portfolio := Portfolio new.
+	portfolio addAccount: account1.
+	
+	
+	self assert: (OrderedCollection with: deposit1) equals: (portfolio transactions).
+
+	
+	! !
+
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:17:13'!
+test07PortfolioWithManyAccountsTransactionsEqualsConcatenationOfAccountsTransactions
+
+	| portfolio account1 account2 deposit1 deposit2 withdraw |
+	account1 := ReceptiveAccount new.
+	 deposit1 := Deposit register: 100 * peso  on: account1.
+	account2 := ReceptiveAccount new.
+	deposit2 :=Deposit register: 200 * peso  on: account2.
+	withdraw := Withdraw register: 200 * peso  on: account2.
+	portfolio := Portfolio new.
+	portfolio addAccount: account1.
+	portfolio addAccount: account2.
+	
+	self assert: (OrderedCollection with: deposit1 with: deposit2 with: withdraw) equals: (portfolio transactions).
+	
+
+	
+	! !
+
+!PortfolioTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:18:04'!
+test08PortfolioCanContainAnotherPortfolio
+
+	| portfolio1 portfolio2 account1 account2 deposit1 deposit2 withdraw |
+	
+	account1 := ReceptiveAccount new.
+	 deposit1 := Deposit register: 100 * peso  on: account1.
+	
+	account2 := ReceptiveAccount new.
+	deposit2 :=Deposit register: 200 * peso  on: account2.
+	withdraw := Withdraw register: 200 * peso  on: account2.
+	
+	portfolio1 := Portfolio new.
+	portfolio2 := Portfolio new. 
+	
+	portfolio1 addAccount: account1.
+	portfolio1 addAccount: account2.
+	portfolio2 addAccount: portfolio1.
+	
+	
+	self assert: (OrderedCollection with: deposit1 with: deposit2 with: withdraw) equals: (portfolio2 transactions).
+	
+
 	
 	! !
 
@@ -181,16 +241,8 @@ TestCase subclass: #TransferTests
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferTests methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:39:23'!
-test01Caso0
-
-	
-
-
-	! !
-
-!TransferTests methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:50:40'!
-test02
+!TransferTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 11:59:24'!
+test01CanTransferMoneyBetweenTwoAccounts
 
 	| account1 account2 |
 	account1 := ReceptiveAccount new.
@@ -198,15 +250,15 @@ test02
 	Deposit register: 50 * peso on: account1.
 	Transfer register: 50 * peso from: account1 to: account2.
 	
-	self assert:(account1 balance) equals: 0 * peso.
-	self assert:(account2 balance) equals: 50 * peso. 
+	self assert: 0 * peso equals: (account1 balance).
+	self assert: 50 * peso equals: (account2 balance). 
 	 
 
 	
 ! !
 
-!TransferTests methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 16:37:12'!
-test03
+!TransferTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 11:59:48'!
+test02TransferValueCanBeKnown
 
 	| account1 account2 transfer|
 	account1 := ReceptiveAccount new.
@@ -214,15 +266,15 @@ test03
 	Deposit register: 50 * peso on: account1.
 	transfer := Transfer register: 50 * peso from: account1 to: account2.
 	
-	self assert: transfer value equals: 50 * peso
+	self assert: 50 * peso equals: transfer value.
 	
 	 
 
 	
 ! !
 
-!TransferTests methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:40:54'!
-test04
+!TransferTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:00:50'!
+test03TransferPartCanKnowCounterpart
 
 	| account1 account2 transfer|
 	account1 := ReceptiveAccount new.
@@ -230,12 +282,33 @@ test04
 	Deposit register: 50 * peso on: account1.
 	transfer := Transfer register: 50 * peso from: account1 to: account2.
 	
-	self assert:((account1 transactions at: 2) counterpart) equals: transfer deposit.
-	self assert:((account2 transactions at: 1) counterpart) equals: transfer withdraw. 
+	self assert: transfer deposit equals: ((account1 transactions at: 2) counterpart).
+	self assert: transfer withdraw equals: ((account2 transactions at: 1) counterpart). 
 	 
 
 	
 ! !
+
+!TransferTests methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 12:03:22'!
+test04CantTransferZeroMoney
+
+	| account1 account2 |
+	account1 := ReceptiveAccount new.
+	account2 := ReceptiveAccount new.
+	
+	self should: [Transfer register: (0 * peso) from: account1 to: account2.]
+	 raise: Error
+	withExceptionDo: [:exception| 
+		self assert:  (Transfer cantTransferZeroMoneyErrorMessage) equals: exception messageText.
+		self assert: (0 * peso) equals: (account1 balance).
+		self assert: (0 * peso) equals: (account2 balance).
+		self assert: OrderedCollection new equals: account1 transactions.
+		self assert: OrderedCollection new equals: account2 transactions]. 
+	
+	
+
+
+	! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -244,6 +317,12 @@ Object subclass: #AccountTransaction
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
+
+!AccountTransaction methodsFor: 'value' stamp: 'FV 7/2/2021 15:26:03'!
+transactionBalance
+
+	^self subclassResponsibility
+! !
 
 !AccountTransaction methodsFor: 'value' stamp: 'HernanWilkinson 9/12/2011 12:25'!
 value 
@@ -292,6 +371,11 @@ value
 	^ value! !
 
 
+!Deposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:26:32'!
+transactionBalance
+
+	^self value! !
+
 !Deposit methodsFor: 'as yet unclassified' stamp: 'jb 7/6/2021 10:55:18'!
 valueForBalance: aPartialBalance
 
@@ -327,6 +411,11 @@ value
 
 	^ value! !
 
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 15:26:42'!
+transactionBalance
+
+	^self value * -1! !
 
 !Withdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/6/2021 10:55:42'!
 valueForBalance: aPartialBalance
@@ -378,6 +467,13 @@ hasRegistered: aTransaction
 initialize
 
 	accounts := OrderedCollection new.! !
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 11:22:12'!
+transactions
+
+	"^(accounts at: 1) transactions."
+	
+	^accounts inject: (OrderedCollection new) into: [:acumulator :account| acumulator, account transactions].! !
 
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros-Ejercicio'!
@@ -453,11 +549,16 @@ withdraw
 Transfer class
 	instanceVariableNames: ''!
 
-!Transfer class methodsFor: 'as yet unclassified' stamp: 'jb 7/5/2021 20:25:50'!
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 11:38:34'!
+cantTransferZeroMoneyErrorMessage
+
+	^'Cant transfer zero money'.! !
+
+!Transfer class methodsFor: 'as yet unclassified' stamp: 'FVF 7/6/2021 11:51:28'!
 register: anAmount from: anAccount1 to: anAccount2
 
 	| transfer |
-	
+	(anAmount = (0 * peso)) ifTrue: [^self error: self cantTransferZeroMoneyErrorMessage].
 	transfer := self new initializeFor: anAmount from: anAccount1 to: anAccount2.
 	
 	^transfer
@@ -511,6 +612,11 @@ initializeFor: anAmount withTransfer: aTransfer
 	value := anAmount.
 	transfer := aTransfer.! !
 
+!TransferDeposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 20:15:34'!
+transactionBalance
+
+	^self value! !
+
 !TransferDeposit methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:35:02'!
 transfer
 
@@ -554,6 +660,11 @@ initializeFor: anAmount withTransfer: aTransfer
 
 	value := anAmount.
 	transfer := aTransfer.! !
+
+!TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 20:15:42'!
+transactionBalance
+
+	^self value * -1! !
 
 !TransferWithdraw methodsFor: 'as yet unclassified' stamp: 'FV 7/2/2021 21:35:11'!
 transfer
