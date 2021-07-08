@@ -150,28 +150,34 @@ TestCase subclass: #ReceptiveAccountTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:43'!
+!ReceptiveAccountTest methodsFor: 'helpers' stamp: 'jb 7/8/2021 17:13:49'!
+assertAccount: anAccount hasBalance: aBalance
+	
+	self assert: aBalance equals: anAccount balance! !
+
+
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'jb 7/8/2021 17:14:15'!
 test01ReceptiveAccountHaveZeroAsBalanceWhenCreated 
 
 	| account |
 	
 	account := ReceptiveAccount new.
 
-	self assert: 0 equals: account balance
+	self assertAccount: account hasBalance: 0.
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:14:20'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'jb 7/8/2021 17:14:38'!
 test02DepositIncreasesBalanceOnTransactionValue 
 
 	| account |
 	
-	account := ReceptiveAccount  new.
+	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account.
-		
-	self assert: 100 * peso equals: account balance
+	
+	self assertAccount: account hasBalance: 100 * peso.
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:14:24'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'jb 7/8/2021 17:14:56'!
 test03WithdrawDecreasesBalanceOnTransactionValue 
 
 	| account |
@@ -179,19 +185,20 @@ test03WithdrawDecreasesBalanceOnTransactionValue
 	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account.
 	Withdraw register: 50 * peso on: account.
-		
-	self assert: 50 * peso equals: account balance
+	
+	self assertAccount: account hasBalance: 50 * peso.
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:14'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'jb 7/8/2021 17:15:32'!
 test04WithdrawValueMustBePositive 
 
-	| account withdrawValue |
+	| account withdrawValue withdraw |
 	
 	account := ReceptiveAccount new.
 	withdrawValue := 50 * peso.
+	withdraw := Withdraw register: withdrawValue on: account.
 	
-	self assert: withdrawValue equals: (Withdraw register: withdrawValue on: account) value
+	self assert: withdrawValue equals: withdraw value
 ! !
 
 !ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:10:22'!
@@ -207,17 +214,19 @@ test05ReceptiveAccountKnowsRegisteredTransactions
 	self assert: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:12:14'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'jb 7/8/2021 17:18:49'!
 test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 
-	| account deposit withdraw |
+	| account anotherAccount deposit withdraw |
 	
 	account := ReceptiveAccount new.
-	deposit :=  Deposit for: 100 * peso.
-	withdraw := Withdraw for: 50 * peso.
+	deposit :=  Deposit register: 100 * peso on: account.
+	withdraw := Withdraw register: 50 * peso on: account.
+	
+	anotherAccount := ReceptiveAccount new.
 		
-	self deny: (account hasRegistered: deposit).
-	self deny: (account hasRegistered: withdraw).
+	self deny: (anotherAccount hasRegistered: deposit).
+	self deny: (anotherAccount hasRegistered: withdraw).
 ! !
 
 !ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:12:23'!
@@ -236,18 +245,25 @@ test07AccountKnowsItsTransactions
 
 !classDefinition: #TransferTests category: 'ServiciosFinancieros-Ejercicio'!
 TestCase subclass: #TransferTests
-	instanceVariableNames: ''
+	instanceVariableNames: 'receptiveAccountWith50Pesos emptyReceptiveAccount'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!TransferTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 11:59:24'!
+!TransferTests methodsFor: 'helpers' stamp: 'jb 7/8/2021 17:04:03'!
+assertAccountHasNoTransactions: anAccount
+
+	self assert: (0 * peso) equals: (anAccount balance).
+	self assert: OrderedCollection new equals: anAccount transactions.! !
+
+
+!TransferTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:08:47'!
 test01CanTransferMoneyBetweenTwoAccounts
 
 	| account1 account2 |
-	account1 := ReceptiveAccount new.
-	account2 := ReceptiveAccount new.
-	Deposit register: 50 * peso on: account1.
+	account1 := receptiveAccountWith50Pesos.
+	account2 := emptyReceptiveAccount.
+	
 	Transfer register: 50 * peso from: account1 to: account2.
 	
 	self assert: 0 * peso equals: (account1 balance).
@@ -257,13 +273,13 @@ test01CanTransferMoneyBetweenTwoAccounts
 	
 ! !
 
-!TransferTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 11:59:48'!
+!TransferTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:20:50'!
 test02TransferValueCanBeKnown
 
-	| account1 account2 transfer|
-	account1 := ReceptiveAccount new.
+	| account1 account2 transfer |
+	account1 := receptiveAccountWith50Pesos.
 	account2 := ReceptiveAccount new.
-	Deposit register: 50 * peso on: account1.
+	
 	transfer := Transfer register: 50 * peso from: account1 to: account2.
 	
 	self assert: 50 * peso equals: transfer value.
@@ -273,13 +289,13 @@ test02TransferValueCanBeKnown
 	
 ! !
 
-!TransferTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 12:00:50'!
+!TransferTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:10:17'!
 test03TransferPartCanKnowCounterpart
 
-	| account1 account2 transfer|
-	account1 := ReceptiveAccount new.
+	| account1 account2 transfer |
+	account1 := receptiveAccountWith50Pesos.
 	account2 := ReceptiveAccount new.
-	Deposit register: 50 * peso on: account1.
+	
 	transfer := Transfer register: 50 * peso from: account1 to: account2.
 	
 	self assert: transfer deposit equals: ((account1 transactions at: 2) counterpart).
@@ -289,7 +305,7 @@ test03TransferPartCanKnowCounterpart
 	
 ! !
 
-!TransferTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 12:03:22'!
+!TransferTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:06:12'!
 test04CantTransferZeroMoney
 
 	| account1 account2 |
@@ -297,17 +313,26 @@ test04CantTransferZeroMoney
 	account2 := ReceptiveAccount new.
 	
 	self should: [Transfer register: (0 * peso) from: account1 to: account2.]
-	 raise: Error
-	withExceptionDo: [:exception| 
-		self assert:  (Transfer cantTransferZeroMoneyErrorMessage) equals: exception messageText.
-		self assert: (0 * peso) equals: (account1 balance).
-		self assert: (0 * peso) equals: (account2 balance).
-		self assert: OrderedCollection new equals: account1 transactions.
-		self assert: OrderedCollection new equals: account2 transactions]. 
-	
+		raise: Error
+		withExceptionDo: [:exception| 
+			self assert:  (Transfer cantTransferZeroMoneyErrorMessage) equals: exception messageText.
+			
+			self assertAccountHasNoTransactions: account1.
+			self assertAccountHasNoTransactions: account2.].
 	
 
 
+	! !
+
+
+!TransferTests methodsFor: 'setUp/tearDown' stamp: 'jb 7/8/2021 17:08:31'!
+setUp
+	
+	receptiveAccountWith50Pesos := ReceptiveAccount new.
+	Deposit register: 50 * peso on: receptiveAccountWith50Pesos.
+	
+	emptyReceptiveAccount := ReceptiveAccount new.
+	
 	! !
 
 
@@ -318,34 +343,34 @@ TestCase subclass: #ValidPortfolioTests
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros-Ejercicio'!
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'FVF 7/7/2021 11:37:21'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:11:50'!
 test01PortfolioCantAddItself
 
-	|portfolio|
+	| portfolio |
 	
 	portfolio := Portfolio new.
 	
 	self should: [portfolio addAccount: portfolio.]
-	raise: Error
-	withExceptionDo:[:exception| ]! !
+		raise: Error
+		withExceptionDo: [:exception | exception messageText = Portfolio invalidAccountAddErrorMessage]! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'FVF 7/7/2021 11:37:55'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:20:11'!
 test02PortfolioCantAddAnAccountAlreadyAdded
 
-	|portfolio account|
+	| portfolio account |
 	
 	portfolio := Portfolio new.
 	account := ReceptiveAccount new.
 	portfolio addAccount: account.
 	
 	self should: [portfolio addAccount:  account.]
-	raise: Error
-	withExceptionDo:[:exception| ]! !
+		raise: Error
+		withExceptionDo: [:exception | exception messageText = Portfolio invalidAccountAddErrorMessage]! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'FVF 7/7/2021 11:36:20'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:20:16'!
 test03PortfolioCantAddAnAccountAlreadyIncludedInAPreviouslyIncludedPortfolio
 
-	|portfolio1 portfolio2 account|
+	| portfolio1 portfolio2 account |
 	
 	portfolio1 := Portfolio new.
 	portfolio2 := Portfolio new.
@@ -355,12 +380,12 @@ test03PortfolioCantAddAnAccountAlreadyIncludedInAPreviouslyIncludedPortfolio
 	
 	self should: [portfolio2 addAccount: account.]
 	raise: Error
-	withExceptionDo:[:exception| ]! !
+	withExceptionDo: [:exception | exception messageText = Portfolio invalidAccountAddErrorMessage]! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'FVF 7/7/2021 13:09:57'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:20:21'!
 test04CantAddAPortfolioIncludingAnAccountToAnotherPortfolioIncludingTheSameAccount
 
-	|portfolio1 portfolio2 account|
+	| portfolio1 portfolio2 account |
 	
 	portfolio1 := Portfolio new.
 	portfolio2 := Portfolio new.
@@ -370,12 +395,12 @@ test04CantAddAPortfolioIncludingAnAccountToAnotherPortfolioIncludingTheSameAccou
 	
 	self should: [portfolio1 addAccount: portfolio2]
 	raise: Error
-	withExceptionDo:[:exception| ]! !
+	withExceptionDo: [:exception | exception messageText = Portfolio invalidAccountAddErrorMessage]! !
 
-!ValidPortfolioTests methodsFor: 'tests' stamp: 'FVF 7/8/2021 12:33:17'!
+!ValidPortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:20:00'!
 test05PortfolioCantAddAnAccountThatAFatherPortfolioAlreadyHas
 
-	|portfolio1 portfolio2 account|
+	| portfolio1 portfolio2 account |
 	
 	portfolio1 := Portfolio new.
 	portfolio2 := Portfolio new.
@@ -385,7 +410,7 @@ test05PortfolioCantAddAnAccountThatAFatherPortfolioAlreadyHas
 	
 	self should: [portfolio2 addAccount: account.]
 	raise: Error
-	withExceptionDo:[:exception| ]! !
+	withExceptionDo: [:exception | exception messageText = Portfolio invalidAccountAddErrorMessage]! !
 
 
 !classDefinition: #AccountContainableInPortfolio category: 'ServiciosFinancieros-Ejercicio'!
@@ -439,23 +464,22 @@ setContainingPortfolio: aPortfolio
 	containingPortfolio := aPortfolio.! !
 
 
-!Portfolio methodsFor: 'accesing' stamp: 'FVF 7/5/2021 21:15:01'!
+!Portfolio methodsFor: 'accesing' stamp: 'jb 7/8/2021 16:59:36'!
 balance
 	
-	accounts ifEmpty:[^0* peso].
+	accounts ifEmpty: [^0* peso].
 	
-	^accounts sum:[:account| account balance].! !
+	^accounts sum: [:account | account balance].! !
 
-!Portfolio methodsFor: 'accesing' stamp: 'FVF 7/5/2021 21:28:31'!
+!Portfolio methodsFor: 'accesing' stamp: 'jb 7/8/2021 17:22:35'!
 hasRegistered: aTransaction
+	
+	^accounts anySatisfy: [:account | account hasRegistered: aTransaction].! !
 
-	accounts do:[:account| (account hasRegistered: aTransaction) ifTrue: [^true]].
-	^false.! !
-
-!Portfolio methodsFor: 'accesing' stamp: 'FVF 7/7/2021 11:48:14'!
+!Portfolio methodsFor: 'accesing' stamp: 'jb 7/8/2021 16:59:54'!
 transactions
 	
-	^accounts inject: (OrderedCollection new) into: [:acumulator :account| acumulator, account transactions].! !
+	^accounts inject: (OrderedCollection new) into: [:acumulator :account | acumulator, account transactions].! !
 
 
 !Portfolio methodsFor: 'private' stamp: 'FVF 7/7/2021 12:51:31'!
@@ -465,21 +489,21 @@ topMostPortfolio
 	^containingPortfolio topMostPortfolio.! !
 
 
-!Portfolio methodsFor: 'validation' stamp: 'FVF 7/8/2021 13:06:46'!
+!Portfolio methodsFor: 'validation' stamp: 'jb 7/8/2021 16:59:17'!
 accountCanBeAdded: anAccount
 
-	(anAccount validateAgainstPortfolio: self topMostPortfolio ) ifTrue: [self error: self class invalidAccountAddErrorMessage].! !
+	(anAccount validateAgainstPortfolio: self topMostPortfolio) ifTrue: [self error: self class invalidAccountAddErrorMessage].! !
 
-!Portfolio methodsFor: 'validation' stamp: 'FVF 7/8/2021 12:27:36'!
+!Portfolio methodsFor: 'validation' stamp: 'jb 7/8/2021 17:00:10'!
 validateAgainstPortfolio: aPortfolio
 
-	^(self = aPortfolio ) or: [accounts anySatisfy:[:account| account validateAgainstPortfolio: aPortfolio]].! !
+	^(self = aPortfolio ) or: [accounts anySatisfy:[:account | account validateAgainstPortfolio: aPortfolio]].! !
 
-!Portfolio methodsFor: 'validation' stamp: 'FVF 7/8/2021 12:55:02'!
+!Portfolio methodsFor: 'validation' stamp: 'jb 7/8/2021 17:00:17'!
 validateAgainstReceptiveAccount: aReceptiveAccount
 	
 	^(self = aReceptiveAccount) or: 
-	[accounts anySatisfy: [:account| account validateAgainstReceptiveAccount: aReceptiveAccount]].! !
+		[accounts anySatisfy: [:account | account validateAgainstReceptiveAccount: aReceptiveAccount]].! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -534,10 +558,10 @@ validateAgainstPortfolio: aPortfolio
 	
 	^aPortfolio validateAgainstReceptiveAccount: self.! !
 
-!ReceptiveAccount methodsFor: 'validation' stamp: 'FVF 7/8/2021 12:24:31'!
+!ReceptiveAccount methodsFor: 'validation' stamp: 'jb 7/8/2021 17:00:55'!
 validateAgainstReceptiveAccount: aReceptiveAccount
 
-	^(self = aReceptiveAccount ).! !
+	^ self = aReceptiveAccount! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros-Ejercicio'!
@@ -594,15 +618,10 @@ initializeFor: aValue
 	value := aValue ! !
 
 
-!Deposit methodsFor: 'value' stamp: 'FV 7/2/2021 15:26:32'!
-transactionBalance
-
-	^self value! !
-
-!Deposit methodsFor: 'value' stamp: 'HernanWilkinson 7/13/2011 18:38'!
+!Deposit methodsFor: 'value' stamp: 'jb 7/8/2021 17:01:10'!
 value
 
-	^ value! !
+	^value! !
 
 !Deposit methodsFor: 'value' stamp: 'jb 7/6/2021 10:55:18'!
 valueForBalance: aPartialBalance
@@ -633,11 +652,6 @@ initializeFor: aValue
 
 	value := aValue ! !
 
-
-!Withdraw methodsFor: 'value' stamp: 'FV 7/2/2021 15:26:42'!
-transactionBalance
-
-	^self value * -1! !
 
 !Withdraw methodsFor: 'value' stamp: 'FV 7/2/2021 15:18:06'!
 value
@@ -764,11 +778,6 @@ counterpart
 	
 	^transfer withdraw.! !
 
-!TransferDeposit methodsFor: 'accesing' stamp: 'FV 7/2/2021 20:15:34'!
-transactionBalance
-
-	^self value! !
-
 !TransferDeposit methodsFor: 'accesing' stamp: 'FV 7/2/2021 21:35:02'!
 transfer
 
@@ -813,11 +822,6 @@ initializeFor: anAmount withTransfer: aTransfer
 counterpart
 	
 	^transfer deposit.! !
-
-!TransferWithdraw methodsFor: 'accesing' stamp: 'FV 7/2/2021 20:15:42'!
-transactionBalance
-
-	^self value * -1! !
 
 !TransferWithdraw methodsFor: 'accesing' stamp: 'FV 7/2/2021 21:35:11'!
 transfer
