@@ -15,27 +15,30 @@ test01EmptyPortfolioHasBalanceZero
 	
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 12:05:46'!
+!PortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 18:04:53'!
 test02PortfolioWithOnlyOneAccountBalanceEqualsAccountBalance
 
 	| portfolio account |
 	account := ReceptiveAccount new.
-	Deposit register: 50 * peso  on: account.
+	Deposit register: 50 * peso on: account.
+	
 	portfolio := Portfolio new.
 	portfolio addAccount: account.
 	
-	self assert: 50 * peso equals: portfolio balance .
+	self assert: 50 * peso equals: portfolio balance.
 	
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 12:07:09'!
+!PortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 18:05:42'!
 test03PortfolioWithMultipleAccountsBalanceEqualsSumOfAccountsBalance
 
 	| portfolio account1 account2 |
 	account1 := ReceptiveAccount new.
-	Deposit register: 100 * peso  on: account1.
+	Deposit register: 100 * peso on: account1.
+	
 	account2 := ReceptiveAccount new.
-	Deposit register: 200 * peso  on: account2.
+	Deposit register: 200 * peso on: account2.
+	
 	portfolio := Portfolio new.
 	portfolio addAccount: account1.
 	portfolio addAccount: account2.
@@ -44,50 +47,54 @@ test03PortfolioWithMultipleAccountsBalanceEqualsSumOfAccountsBalance
 	
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 12:14:50'!
+!PortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 18:06:35'!
 test04PortfolioCanFindTransactionsInAccount
 
 	| portfolio account1 account2 deposit1 deposit2 withdraw |
 	account1 := ReceptiveAccount new.
-	 deposit1 := Deposit register: 100 * peso  on: account1.
+	deposit1 := Deposit register: 100 * peso on: account1.
+	
 	account2 := ReceptiveAccount new.
-	deposit2 :=Deposit register: 200 * peso  on: account2.
-	withdraw := Withdraw register: 200 * peso  on: account2.
+	deposit2 := Deposit register: 200 * peso on: account2.
+	withdraw := Withdraw register: 200 * peso on: account2.
+	
 	portfolio := Portfolio new.
 	portfolio addAccount: account1.
 	portfolio addAccount: account2.
 	
-	self assert:  (portfolio hasRegistered: deposit1).
-	self assert:  (portfolio hasRegistered: deposit2).
-	self assert:  (portfolio hasRegistered: withdraw).
+	self assert: (portfolio hasRegistered: deposit1).
+	self assert: (portfolio hasRegistered: deposit2).
+	self assert: (portfolio hasRegistered: withdraw).
 	
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 12:12:32'!
+!PortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 18:10:47'!
 test05PortfolioCantFindTransactionThatIsntInAccount
 
 	| portfolio account1 account2 deposit1 deposit2 withdraw |
 	account1 := ReceptiveAccount new.
-	 deposit1 := Deposit register: 100 * peso  on: account1.
+	deposit1 := Deposit register: 100 * peso  on: account1.
+	
 	account2 := ReceptiveAccount new.
-	deposit2 :=Deposit register: 200 * peso  on: account2.
+	deposit2 := Deposit register: 200 * peso  on: account2.
 	withdraw := Withdraw register: 200 * peso  on: account2.
+	
 	portfolio := Portfolio new.
-
 	portfolio addAccount: account2.
 	
 	self deny: (portfolio hasRegistered: deposit1).
-	self assert:  (portfolio hasRegistered: deposit2).
-	self assert:  (portfolio hasRegistered: withdraw).
+	self assert: (portfolio hasRegistered: deposit2).
+	self assert: (portfolio hasRegistered: withdraw).
 	
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 12:16:08'!
+!PortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 18:10:55'!
 test06PortfolioWithOneAccountTransactionsEqualsAccountTransactions
 
 	| portfolio account1 deposit1 |
 	account1 := ReceptiveAccount new.
-	 deposit1 := Deposit register: 100 * peso  on: account1.
+	deposit1 := Deposit register: 100 * peso on: account1.
+	
 	portfolio := Portfolio new.
 	portfolio addAccount: account1.
 	
@@ -97,15 +104,17 @@ test06PortfolioWithOneAccountTransactionsEqualsAccountTransactions
 	
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 12:17:13'!
+!PortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 18:11:07'!
 test07PortfolioWithManyAccountsTransactionsEqualsConcatenationOfAccountsTransactions
 
 	| portfolio account1 account2 deposit1 deposit2 withdraw |
 	account1 := ReceptiveAccount new.
-	 deposit1 := Deposit register: 100 * peso  on: account1.
+	deposit1 := Deposit register: 100 * peso  on: account1.
+	
 	account2 := ReceptiveAccount new.
-	deposit2 :=Deposit register: 200 * peso  on: account2.
+	deposit2 := Deposit register: 200 * peso  on: account2.
 	withdraw := Withdraw register: 200 * peso  on: account2.
+	
 	portfolio := Portfolio new.
 	portfolio addAccount: account1.
 	portfolio addAccount: account2.
@@ -116,7 +125,7 @@ test07PortfolioWithManyAccountsTransactionsEqualsConcatenationOfAccountsTransact
 	
 	! !
 
-!PortfolioTests methodsFor: 'tests' stamp: 'FVF 7/6/2021 12:18:04'!
+!PortfolioTests methodsFor: 'tests' stamp: 'jb 7/8/2021 18:11:14'!
 test08PortfolioCanContainAnotherPortfolio
 
 	| portfolio1 portfolio2 account1 account2 deposit1 deposit2 withdraw |
@@ -125,7 +134,7 @@ test08PortfolioCanContainAnotherPortfolio
 	 deposit1 := Deposit register: 100 * peso  on: account1.
 	
 	account2 := ReceptiveAccount new.
-	deposit2 :=Deposit register: 200 * peso  on: account2.
+	deposit2 := Deposit register: 200 * peso  on: account2.
 	withdraw := Withdraw register: 200 * peso  on: account2.
 	
 	portfolio1 := Portfolio new.
@@ -214,13 +223,13 @@ test05ReceptiveAccountKnowsRegisteredTransactions
 	self assert: (account hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'jb 7/8/2021 17:18:49'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'jb 7/8/2021 18:09:46'!
 test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 
 	| account anotherAccount deposit withdraw |
 	
 	account := ReceptiveAccount new.
-	deposit :=  Deposit register: 100 * peso on: account.
+	deposit := Deposit register: 100 * peso on: account.
 	withdraw := Withdraw register: 50 * peso on: account.
 	
 	anotherAccount := ReceptiveAccount new.
@@ -229,13 +238,12 @@ test06ReceptiveAccountDoNotKnowNotRegisteredTransactions
 	self deny: (anotherAccount hasRegistered: withdraw).
 ! !
 
-!ReceptiveAccountTest methodsFor: 'tests' stamp: 'LL 7/1/2021 03:12:23'!
+!ReceptiveAccountTest methodsFor: 'tests' stamp: 'jb 7/8/2021 18:09:57'!
 test07AccountKnowsItsTransactions 
 
 	| account deposit |
 	
 	account := ReceptiveAccount new.
-	
 	deposit := Deposit register: 50 * peso on: account.
 		
 	self assert: 1 equals: account transactions size.
@@ -273,12 +281,12 @@ test01CanTransferMoneyBetweenTwoAccounts
 	
 ! !
 
-!TransferTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:20:50'!
+!TransferTests methodsFor: 'tests' stamp: 'jb 7/8/2021 18:01:54'!
 test02TransferValueCanBeKnown
 
 	| account1 account2 transfer |
 	account1 := receptiveAccountWith50Pesos.
-	account2 := ReceptiveAccount new.
+	account2 := emptyReceptiveAccount.
 	
 	transfer := Transfer register: 50 * peso from: account1 to: account2.
 	
@@ -289,12 +297,12 @@ test02TransferValueCanBeKnown
 	
 ! !
 
-!TransferTests methodsFor: 'tests' stamp: 'jb 7/8/2021 17:10:17'!
+!TransferTests methodsFor: 'tests' stamp: 'jb 7/8/2021 18:02:21'!
 test03TransferPartCanKnowCounterpart
 
 	| account1 account2 transfer |
 	account1 := receptiveAccountWith50Pesos.
-	account2 := ReceptiveAccount new.
+	account2 := emptyReceptiveAccount.
 	
 	transfer := Transfer register: 50 * peso from: account1 to: account2.
 	
