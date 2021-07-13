@@ -311,15 +311,15 @@ TestCase subclass: #ReportsTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2'!
 
-!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/10/2021 15:04:12'!
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/12/2021 21:34:32'!
 test06
 
 	| account |
 	account := ReceptiveAccount new.
 	
-	self assert: account transferNet equals: 0.! !
+	self assert: 0 equals: ((TransferNet forAccount: account) make).! !
 
-!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/10/2021 15:15:12'!
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/12/2021 21:34:47'!
 test07
 
 	| account anotherAccount |
@@ -328,9 +328,9 @@ test07
 	
 	Transfer amount: 50 * peso from: anotherAccount to: account.
 	
-	self assert: 50 * peso equals: account transferNet.! !
+	self assert: 50 * peso equals: (TransferNet forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/10/2021 15:14:28'!
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/12/2021 21:34:55'!
 test08
 
 	| account anotherAccount |
@@ -339,9 +339,9 @@ test08
 	
 	Transfer amount: 50 * peso from: account to: anotherAccount.
 	
-	self assert: -50 * peso equals: account transferNet.! !
+	self assert: -50 * peso equals: (TransferNet forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/10/2021 15:16:20'!
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/12/2021 21:35:01'!
 test09
 
 	| account anotherAccount |
@@ -351,36 +351,36 @@ test09
 	Transfer amount: 20 * peso from: account to: anotherAccount.
 	Transfer amount: 30 * peso from: anotherAccount to: account.
 	
-	self assert: 10 * peso equals: account transferNet.! !
+	self assert: 10 * peso equals: (TransferNet forAccount: account) make.! !
 
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/10/2021 14:46:48'!
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:33:23'!
 test01
 	| account |
 	
 	account := ReceptiveAccount new.
 	
-	self assert: (OrderedCollection with: 'Balance = 0 pesos') equals: account summary.! !
+	self assert: (OrderedCollection with: 'Balance = 0 pesos') equals: (Summary forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/10/2021 14:45:28'!
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:33:49'!
 test02
 	| account |
 	
 	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account.
 	
-	self assert: (OrderedCollection with: 'Depósito por 100 pesos' with: 'Balance = 100 pesos') equals: account summary.! !
+	self assert: (OrderedCollection with: 'Depósito por 100 pesos' with: 'Balance = 100 pesos') equals: (Summary forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/10/2021 14:50:25'!
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:33:55'!
 test03
 	| account |
 	
 	account := ReceptiveAccount new.
 	Withdraw register: 50 * peso on: account.
 	
-	self assert: (OrderedCollection with: 'Extracción por 50 pesos' with: 'Balance = -50 pesos') equals: account summary.! !
+	self assert: (OrderedCollection with: 'Extracción por 50 pesos' with: 'Balance = -50 pesos') equals: (Summary forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/10/2021 14:52:18'!
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:33:59'!
 test04
 	| account anotherAccount |
 	
@@ -389,9 +389,9 @@ test04
 	anotherAccount := ReceptiveAccount new.
 	Transfer amount: 20 * peso from: account to: anotherAccount.
 	
-	self assert: (OrderedCollection with: 'Salida por transferencia de 20 pesos' with: 'Balance = -20 pesos') equals: account summary.! !
+	self assert: (OrderedCollection with: 'Salida por transferencia de 20 pesos' with: 'Balance = -20 pesos') equals: (Summary forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/10/2021 14:59:10'!
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:34:05'!
 test05
 	| account anotherAccount reporte |
 	
@@ -411,7 +411,8 @@ test05
 		with: 'Entrada por transferencia de 30 pesos'
 		with: 'Balance = 60 pesos'.
 	
-	self assert: reporte equals: account summary.! !
+	self assert: reporte equals: (Summary forAccount: account) make.! !
+
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros2'!
@@ -556,32 +557,6 @@ isComposedBy: anAccount
 addTransactionsTo: aCollectionOfTransactions
 
 	self subclassResponsibility ! !
-
-
-!Account methodsFor: 'reports' stamp: 'jb 7/10/2021 15:23:56'!
-summary
-	| report |
-	
-	"Transformamos transacciones en reporte"
-	report := OrderedCollection new.
-	self transactions do: [:transaction |
-		(transaction isKindOf: Deposit) ifTrue: [report add: 'Depósito por ', (transaction value) asString].
-		(transaction isKindOf: Withdraw) ifTrue: [report add: 'Extracción por ', (transaction value) asString].
-		(transaction isKindOf: TransferWithdrawLeg) ifTrue: [report add: 'Salida por transferencia de ', (transaction value) asString].
-		(transaction isKindOf: TransferDepositLeg) ifTrue: [report add: 'Entrada por transferencia de ', (transaction value) asString].
-		].
-	
-	"Agregamos el balance"
-	report add: 'Balance = ', ((self balance) asString).
-	^report! !
-
-!Account methodsFor: 'reports' stamp: 'jb 7/10/2021 15:22:46'!
-transferNet
-	
-	^(self transactions
-		select: [:transaction | transaction isKindOf: TransferLeg])
-		inject: 0
-		into: [:transferNet :transferLeg | transferLeg affectBalance: transferNet]! !
 
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros2'!
@@ -819,6 +794,22 @@ affectBalance: aBalance
 
 	^aBalance + value ! !
 
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:49:27'!
+affectTransferNet: aTransferNet withReportMaker: aReportMaker
+	
+	^aReportMaker affectTransferNet: aTransferNet withDeposit: self.! !
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:24:21'!
+computePartForReport: aReport
+
+	^aReport computeDepositPart: self! !
+
+!Deposit methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:25:02'!
+summaryStringForReportMaker: aReportMaker
+
+	^aReportMaker depositSummaryString: self.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Deposit class' category: 'ServiciosFinancieros2'!
@@ -860,6 +851,22 @@ initializeWith: aTransfer
 
 	transfer := aTransfer! !
 
+
+!TransferLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:49:56'!
+affectTransferNet: aTransferNet withReportMaker: aReportMaker
+	
+	self subclassResponsibility ! !
+
+!TransferLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:24:45'!
+computePartForReport: aReport
+
+	self subclassResponsibility ! !
+
+!TransferLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:25:21'!
+summaryStringForReportMaker: aReportMaker
+
+	self subclassResponsibility ! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'TransferLeg class' category: 'ServiciosFinancieros2'!
@@ -895,6 +902,22 @@ affectBalance: aBalance
 
 	^aBalance + self value! !
 
+
+!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:50:09'!
+affectTransferNet: aTransferNet withReportMaker: aReportMaker
+	
+	^aReportMaker affectTransferNet: aTransferNet withTransferDeposit: self.! !
+
+!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:25:01'!
+computePartForReport: aReport
+
+	^aReport computeTransferDepositPart: self! !
+
+!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:25:38'!
+summaryStringForReportMaker: aReportMaker
+
+	^aReportMaker transferDepositSummaryString: self.! !
+
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros2'!
 TransferLeg subclass: #TransferWithdrawLeg
@@ -913,6 +936,22 @@ depositLeg
 affectBalance: aBalance
 
 	^aBalance - self value! !
+
+
+!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:50:31'!
+affectTransferNet: aTransferNet withReportMaker: aReportMaker
+	
+	^aReportMaker affectTransferNet: aTransferNet withTransferWithdraw: self.! !
+
+!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:25:14'!
+computePartForReport: aReport
+
+	^aReport computeTransferWithdrawPart: self! !
+
+!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:26:11'!
+summaryStringForReportMaker: aReportMaker
+
+	^aReportMaker transferWithdrawSummaryString: self.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros2'!
@@ -939,6 +978,22 @@ affectBalance: aBalance
 
 	^aBalance - value! !
 
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:50:42'!
+affectTransferNet: aTransferNet withReportMaker: aReportMaker
+	
+	^aReportMaker affectTransferNet: aTransferNet withWithdraw: self.! !
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:25:24'!
+computePartForReport: aReport
+
+	^aReport computeWithdrawPart: self! !
+
+!Withdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:26:22'!
+summaryStringForReportMaker: aReportMaker
+
+	^aReportMaker withdrawSummaryString: self.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Withdraw class' category: 'ServiciosFinancieros2'!
@@ -960,6 +1015,114 @@ register: aValue on: account
 	account register: transaction.
 		
 	^ transaction! !
+
+
+!classDefinition: #Report category: 'ServiciosFinancieros2'!
+Object subclass: #Report
+	instanceVariableNames: 'account'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2'!
+
+!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:34'!
+computeDepositPart: aDeposit
+
+	self subclassResponsibility ! !
+
+!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:42'!
+computeTransferDepositPart: aTransferDeposit
+
+	self subclassResponsibility ! !
+
+!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:52'!
+computeTransferWithdrawPart: aTransferWithdraw
+
+	self subclassResponsibility ! !
+
+!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:59'!
+computeWithdrawPart: aWithdraw
+
+	self subclassResponsibility ! !
+
+!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:09'!
+make
+	self subclassResponsibility! !
+
+
+!classDefinition: #Summary category: 'ServiciosFinancieros2'!
+Report subclass: #Summary
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2'!
+
+
+!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:27:41'!
+computeDepositPart: aDeposit
+
+	^ 'Depósito por ', (aDeposit value) asString.! !
+
+!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:32:53'!
+computeTransferDepositPart: aTransferDeposit
+
+	^ 'Entrada por transferencia de ', (aTransferDeposit value) asString! !
+
+!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:33:08'!
+computeTransferWithdrawPart: aTransferWithdraw
+	
+	^ 'Salida por transferencia de ', (aTransferWithdraw value) asString! !
+
+!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:32:24'!
+computeWithdrawPart: aWithdraw
+	
+	^ 'Extracción por ', (aWithdraw value) asString.! !
+
+!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:23:47'!
+make
+	| report |
+	
+	report := OrderedCollection new.
+	account transactions do: [:transaction | 		report add: (transaction computePartForReport: self)].
+	
+	report add: 'Balance = ', ((account balance) asString).
+	^report! !
+
+
+!classDefinition: #TransferNet category: 'ServiciosFinancieros2'!
+Report subclass: #TransferNet
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2'!
+
+!TransferNet methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:35:33'!
+make
+	| transactions |
+
+	transactions := account transactions.
+	
+	^transactions inject: 0 into: [:transferNet :transaction | transferNet + (transaction computePartForReport: self)]! !
+
+
+!TransferNet methodsFor: 'transaction messages' stamp: 'jb 7/12/2021 21:30:54'!
+computeDepositPart: aDeposit
+
+	^0! !
+
+!TransferNet methodsFor: 'transaction messages' stamp: 'jb 7/12/2021 21:36:45'!
+computeTransferDepositPart: aTransferDeposit
+
+	^aTransferDeposit value! !
+
+!TransferNet methodsFor: 'transaction messages' stamp: 'jb 7/12/2021 21:36:12'!
+computeTransferWithdrawPart: aTransferWithdraw
+
+	^ (aTransferWithdraw value) negated! !
+
+!TransferNet methodsFor: 'transaction messages' stamp: 'jb 7/12/2021 21:30:47'!
+computeWithdrawPart: aWithdraw
+
+	^0! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros2'!
