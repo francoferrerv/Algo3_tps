@@ -1,49 +1,3 @@
-!classDefinition: #PortfolioDetailedTreePrinterTests category: 'ServiciosFinancieros2'!
-TestCase subclass: #PortfolioDetailedTreePrinterTests
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros2'!
-
-!PortfolioDetailedTreePrinterTests methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 15:29:42'!
-test01WithPortfolioWithMultipleAccountsAndPortfoliosPrintsTheirNamesProperlyIndented
-	| childrenPortfolio angiesAccount expectedAnswer familyPortfolio johnsAccount myAccount |
-	
-	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
-	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
-	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
-	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
-	
-	Deposit register: 100 * peso on: myAccount.
-	Withdraw register: 50 * peso on: myAccount.
-	
-	Deposit register: 150 * peso on: johnsAccount.
-	
-	Transfer amount: 75 * peso from: angiesAccount to: johnsAccount.
-	
-	expectedAnswer := OrderedCollection new.
-	expectedAnswer add: 'Portfolio de la familia'.
-	expectedAnswer add: String tab, 'Cuenta mia'.
-	expectedAnswer add: String tab, String tab, 'Depósito por 100 pesos'.
-	expectedAnswer add: String tab, String tab, 'Extracción por 50 pesos'.
-	expectedAnswer add: String tab, String tab, 'Balance = 50 pesos'.
-	expectedAnswer add: String tab, 'Portfolio de hijos'.
-	expectedAnswer add: String tab, String tab, 'Cuenta de Juan'.
-	expectedAnswer add: String tab, String tab, String tab, 'Depósito por 150 pesos'.
-	expectedAnswer add: String tab, String tab, String tab, 'Entrada por transferencia de 75 pesos'.
-	expectedAnswer add: String tab, String tab, String tab, 'Balance = 225 pesos'.
-	expectedAnswer add: String tab, String tab, 'Cuenta de Angeles'.
-	expectedAnswer add: String tab, String tab, String tab, 'Salida por transferencia de 75 pesos'.
-	expectedAnswer add: String tab, String tab, String tab, 'Balance = -75 pesos'.
-	expectedAnswer add: String tab, String tab, 'Balance = 150 pesos'.
-	expectedAnswer add: String tab, 'Balance = 200 pesos'.
-	
-	
-		
-	self assert: expectedAnswer equals: (PortfolioDetailedTreePrinter forAccount: familyPortfolio) make! !
-
-
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros2'!
 TestCase subclass: #PortfolioTest
 	instanceVariableNames: ''
@@ -259,49 +213,6 @@ test15PortfolioCanNotIncludeAnyOfTheComposedAccountOfPortfolioToAdd
 			self assert: portfolioToModify accountsIsEmpty ]! !
 
 
-!classDefinition: #PortfolioTreePrinterTests category: 'ServiciosFinancieros2'!
-TestCase subclass: #PortfolioTreePrinterTests
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros2'!
-
-!PortfolioTreePrinterTests methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 15:27:01'!
-test01WithOneReceptiveAccountPrintsAccountName
-	| johnsAccount |
-	
-	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'.
-
-	 self assert: (OrderedCollection with: 'Cuenta de Juan') equals: (PortfolioTreePrinter forAccount: johnsAccount) make! !
-
-!PortfolioTreePrinterTests methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 15:27:47'!
-test02WithOneEmptyPortfolioPrintsPortfolioName
-	| childrenPortfolio |
-	
-	childrenPortfolio := Portfolio named: 'Portfolio de hijos'.
-
-	 self assert: (OrderedCollection with: 'Portfolio de hijos') equals: (PortfolioTreePrinter forAccount: childrenPortfolio) make! !
-
-!PortfolioTreePrinterTests methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 15:28:46'!
-test03WithPortfolioWithMultipleAccountsAndPortfoliosPrintsTheirNamesProperlyIndented
-	| childrenPortfolio angiesAccount expectedAnswer familyPortfolio johnsAccount myAccount |
-	
-	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
-	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
-	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
-	myAccount := ReceptiveAccount named: 'Cuenta mia'.
-	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
-	
-	expectedAnswer := OrderedCollection
-		with: 'Portfolio de la familia'
-		with: String tab, 'Cuenta mia'
-		with: String tab, 'Portfolio de hijos'
-		with: String tab, String tab, 'Cuenta de Juan'
-		with: String tab, String tab, 'Cuenta de Angeles'.
-		
-	self assert: expectedAnswer equals: (PortfolioTreePrinter forAccount: familyPortfolio) make! !
-
-
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros2'!
 TestCase subclass: #ReceptiveAccountTest
 	instanceVariableNames: ''
@@ -400,16 +311,68 @@ TestCase subclass: #ReportsTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2'!
 
-!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/12/2021 21:34:32'!
-test06
+!ReportsTest methodsFor: 'portfolio tree printer tests' stamp: 'jb 7/15/2021 11:36:59'!
+test10PortfolioTreePrinterWithOneReceptiveAccountPrintsAccountName
+	| johnsAccount |
+	
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'.
+
+	 self assert: (OrderedCollection with: 'Cuenta de Juan') equals: (PortfolioTreePrinter forAccount: johnsAccount) make! !
+
+!ReportsTest methodsFor: 'portfolio tree printer tests' stamp: 'jb 7/15/2021 11:37:35'!
+test11PortfolioTreePrinterWithOneEmptyPortfolioPrintsPortfolioName
+	| childrenPortfolio |
+	
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos'.
+
+	 self assert: (OrderedCollection with: 'Portfolio de hijos') equals: (PortfolioTreePrinter forAccount: childrenPortfolio) make! !
+
+!ReportsTest methodsFor: 'portfolio tree printer tests' stamp: 'jb 7/15/2021 12:22:07'!
+test12PortfolioTreePrinterWithPortfolioWithMultipleAccountsAndPortfoliosPrintsTheirNamesProperlyIndented
+	| childrenPortfolio angiesAccount expectedAnswer familyPortfolio johnsAccount myAccount |
+	
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	myAccount := ReceptiveAccount named: 'Cuenta mia'.
+	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	
+	expectedAnswer := OrderedCollection
+		with: 'Portfolio de la familia'
+		with: String tab, 'Cuenta mia'
+		with: String tab, 'Portfolio de hijos'
+		with: String tab, String tab, 'Cuenta de Juan'
+		with: String tab, String tab, 'Cuenta de Angeles'.
+		
+	self assert: expectedAnswer equals: (PortfolioTreePrinter forAccount: familyPortfolio) make! !
+
+!ReportsTest methodsFor: 'portfolio tree printer tests' stamp: 'jb 7/15/2021 12:20:34'!
+test13PortfolioTreePrinterOfUnnamedReceptiveAccountPrintsDefaultName
+	| aReceptiveAccount |
+	
+	aReceptiveAccount := ReceptiveAccount new.
+
+	 self assert: (OrderedCollection with: 'A ReceptiveAccount') equals: (PortfolioTreePrinter forAccount: aReceptiveAccount) make! !
+
+!ReportsTest methodsFor: 'portfolio tree printer tests' stamp: 'jb 7/15/2021 12:20:24'!
+test14PortfolioTreePrinterOfUnnamedPortfolioPrintsDefaultName
+	| aPortfolio |
+	
+	aPortfolio := Portfolio new.
+
+	 self assert: (OrderedCollection with: 'A Portfolio') equals: (PortfolioTreePrinter forAccount: aPortfolio) make! !
+
+
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/15/2021 12:11:36'!
+test06TransferNetOfEmptyAccountReturnsZeroBalance
 
 	| account |
 	account := ReceptiveAccount new.
 	
 	self assert: 0 equals: ((TransferNet forAccount: account) make).! !
 
-!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/12/2021 21:34:47'!
-test07
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/15/2021 12:13:53'!
+test07TransferNetOfAccountWithTransferDepositLegReturnsTransferDepositLegValue
 
 	| account anotherAccount |
 	account := ReceptiveAccount new.
@@ -419,8 +382,8 @@ test07
 	
 	self assert: 50 * peso equals: (TransferNet forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/12/2021 21:34:55'!
-test08
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/15/2021 12:14:24'!
+test08TransferNetOfAccountWithTransferWithdrawLegReturnsTransferWithdrawLegValueNegated
 
 	| account anotherAccount |
 	account := ReceptiveAccount new.
@@ -430,8 +393,8 @@ test08
 	
 	self assert: -50 * peso equals: (TransferNet forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/12/2021 21:35:01'!
-test09
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/15/2021 12:15:02'!
+test09TransferNetOfAccountWithMultipleTransferencesReturnsCorrectValue
 
 	| account anotherAccount |
 	account := ReceptiveAccount new.
@@ -442,26 +405,50 @@ test09
 	
 	self assert: 10 * peso equals: (TransferNet forAccount: account) make.! !
 
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/15/2021 12:15:26'!
+test09bisTransferNetOfAccountWithDepositReturnsZero
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:33:23'!
-test01
+	| account |
+	account := ReceptiveAccount new.
+	
+	Deposit register: 10 * peso on: account.
+	
+	self assert: 0 equals: (TransferNet forAccount: account) make.! !
+
+!ReportsTest methodsFor: 'transfer net tests' stamp: 'jb 7/15/2021 12:15:44'!
+test09bisbisTransferNetOfAccountWithWithdrawReturnsZero
+
+	| account |
+	account := ReceptiveAccount new.
+	
+	Withdraw register: 10 * peso on: account.
+	
+	self assert: 0 equals: (TransferNet forAccount: account) make.! !
+
+
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/15/2021 12:06:46'!
+test01SummaryOfEmptyAccountReturns0BalanceMessage
 	| account |
 	
 	account := ReceptiveAccount new.
 	
 	self assert: (OrderedCollection with: 'Balance = 0 pesos') equals: (Summary forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:33:49'!
-test02
-	| account |
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/15/2021 12:10:49'!
+test02SummaryOfAccountWithDepositReturnsCorrectMessage
+	| account expectedAnswer |
 	
 	account := ReceptiveAccount new.
 	Deposit register: 100 * peso on: account.
 	
-	self assert: (OrderedCollection with: 'Depósito por 100 pesos' with: 'Balance = 100 pesos') equals: (Summary forAccount: account) make.! !
+	expectedAnswer := OrderedCollection
+		with: 'Depósito por 100 pesos'
+		with: 'Balance = 100 pesos'.
+	
+	self assert: expectedAnswer equals: (Summary forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:33:55'!
-test03
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/15/2021 12:10:03'!
+test03SummaryOfAccountWithWithdrawReturnsCorrectMessage
 	| account |
 	
 	account := ReceptiveAccount new.
@@ -469,8 +456,8 @@ test03
 	
 	self assert: (OrderedCollection with: 'Extracción por 50 pesos' with: 'Balance = -50 pesos') equals: (Summary forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:33:59'!
-test04
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/15/2021 12:10:15'!
+test04SummaryOfAccountWithTransferWithdrawLegReturnsCorrectMessage
 	| account anotherAccount |
 	
 	account := ReceptiveAccount new.
@@ -480,9 +467,9 @@ test04
 	
 	self assert: (OrderedCollection with: 'Salida por transferencia de 20 pesos' with: 'Balance = -20 pesos') equals: (Summary forAccount: account) make.! !
 
-!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/12/2021 21:34:05'!
-test05
-	| account anotherAccount reporte |
+!ReportsTest methodsFor: 'account summary tests' stamp: 'jb 7/15/2021 12:10:24'!
+test05SummaryOfAccountWithMultipleTransactionsReturnsCorrectMessage
+	| account anotherAccount expectedAnswer |
 	
 	account := ReceptiveAccount new.
 	
@@ -493,15 +480,101 @@ test05
 	Transfer amount: 20 * peso from: account to: anotherAccount.
 	Transfer amount: 30 * peso from: anotherAccount to: account.
 	
-	reporte := OrderedCollection
+	expectedAnswer := OrderedCollection
 		with: 'Depósito por 100 pesos'
 		with: 'Extracción por 50 pesos'
 		with: 'Salida por transferencia de 20 pesos'
 		with: 'Entrada por transferencia de 30 pesos'
 		with: 'Balance = 60 pesos'.
 	
-	self assert: reporte equals: (Summary forAccount: account) make.! !
+	self assert: expectedAnswer equals: (Summary forAccount: account) make.! !
 
+
+!ReportsTest methodsFor: 'portfolio detailed tree printer tests' stamp: 'jb 7/15/2021 11:55:11'!
+test15PortfolioDetailedTreePrinterWithOneReceptiveAccountPrintsAccountNameAndZeroBalanceProperly
+	| johnsAccount expectedAnswer |
+	
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'.
+	
+	expectedAnswer := OrderedCollection
+		with: 'Cuenta de Juan'
+		with: String tab, 'Balance = 0 pesos'.
+
+	 self assert: expectedAnswer equals: (PortfolioDetailedTreePrinter forAccount: johnsAccount) make! !
+
+!ReportsTest methodsFor: 'portfolio detailed tree printer tests' stamp: 'jb 7/15/2021 12:00:55'!
+test16PortfolioDetailedTreePrinterWithOneEmptyPortfolioPrintsPortfolioNameAndZeroBalanceProperly
+	| childrenPortfolio expectedAnswer |
+	
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos'.
+	
+	expectedAnswer := OrderedCollection
+		with: 'Portfolio de hijos'
+		with: String tab, 'Balance = 0 pesos'.
+
+	 self assert: expectedAnswer equals: (PortfolioDetailedTreePrinter forAccount: childrenPortfolio) make! !
+
+!ReportsTest methodsFor: 'portfolio detailed tree printer tests' stamp: 'jb 7/15/2021 12:21:57'!
+test17PortfolioDetailedTreePrinterWithPortfolioWithMultipleAccountsAndPortfoliosPrintsTheirNamesProperlyIndented
+	| childrenPortfolio angiesAccount expectedAnswer familyPortfolio johnsAccount myAccount |
+	
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	myAccount := ReceptiveAccount named: 'Cuenta mia'.
+	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	
+	Deposit register: 100 * peso on: myAccount.
+	Withdraw register: 50 * peso on: myAccount.
+	
+	Deposit register: 150 * peso on: johnsAccount.
+	
+	Transfer amount: 75 * peso from: angiesAccount to: johnsAccount.
+	
+	expectedAnswer := OrderedCollection new.
+	expectedAnswer add: 'Portfolio de la familia'.
+	expectedAnswer add: String tab, 'Cuenta mia'.
+	expectedAnswer add: String tab, String tab, 'Depósito por 100 pesos'.
+	expectedAnswer add: String tab, String tab, 'Extracción por 50 pesos'.
+	expectedAnswer add: String tab, String tab, 'Balance = 50 pesos'.
+	expectedAnswer add: String tab, 'Portfolio de hijos'.
+	expectedAnswer add: String tab, String tab, 'Cuenta de Juan'.
+	expectedAnswer add: String tab, String tab, String tab, 'Depósito por 150 pesos'.
+	expectedAnswer add: String tab, String tab, String tab, 'Entrada por transferencia de 75 pesos'.
+	expectedAnswer add: String tab, String tab, String tab, 'Balance = 225 pesos'.
+	expectedAnswer add: String tab, String tab, 'Cuenta de Angeles'.
+	expectedAnswer add: String tab, String tab, String tab, 'Salida por transferencia de 75 pesos'.
+	expectedAnswer add: String tab, String tab, String tab, 'Balance = -75 pesos'.
+	expectedAnswer add: String tab, String tab, 'Balance = 150 pesos'.
+	expectedAnswer add: String tab, 'Balance = 200 pesos'.
+	
+	
+		
+	self assert: expectedAnswer equals: (PortfolioDetailedTreePrinter forAccount: familyPortfolio) make! !
+
+!ReportsTest methodsFor: 'portfolio detailed tree printer tests' stamp: 'jb 7/15/2021 12:21:09'!
+test18PortfolioDetailedTreePrinterOfUnnamedReceptiveAccountPrintsDefaultNameAndEmptyBalance
+	| aReceptiveAccount expectedAnswer |
+	
+	aReceptiveAccount := ReceptiveAccount new.
+	
+	expectedAnswer := OrderedCollection
+		with: 'A ReceptiveAccount'
+		with: String tab, 'Balance = 0 pesos'.
+
+	 self assert: expectedAnswer equals: (PortfolioDetailedTreePrinter forAccount: aReceptiveAccount) make! !
+
+!ReportsTest methodsFor: 'portfolio detailed tree printer tests' stamp: 'jb 7/15/2021 12:22:41'!
+test19PortfolioDetailedTreePrinterOfUnnamedPortfolioPrintsDefaultNameAndEmptyBalance
+	| aPortfolio expectedAnswer |
+	
+	aPortfolio := Portfolio new.
+	
+	expectedAnswer := OrderedCollection
+		with: 'A Portfolio'
+		with: String tab, 'Balance = 0 pesos'.
+
+	 self assert: expectedAnswer equals: (PortfolioDetailedTreePrinter forAccount: aPortfolio) make! !
 
 
 !classDefinition: #TransferTest category: 'ServiciosFinancieros2'!
@@ -1181,24 +1254,29 @@ make
 	self subclassResponsibility! !
 
 
-!Report methodsFor: 'compute transaction part' stamp: 'jb 7/13/2021 12:11:34'!
+!Report methodsFor: 'compute account part' stamp: 'jb 7/15/2021 11:32:04'!
+computePortfolioPart: aPortfolio
+	self subclassResponsibility ! !
+
+!Report methodsFor: 'compute account part' stamp: 'jb 7/15/2021 11:32:29'!
+computeReceptiveAccountPart: aReceptiveAccount
+	self subclassResponsibility! !
+
+
+!Report methodsFor: 'compute transaction part' stamp: 'jb 7/15/2021 11:33:09'!
 computeDepositPart: aDeposit
-
 	self subclassResponsibility ! !
 
-!Report methodsFor: 'compute transaction part' stamp: 'jb 7/13/2021 12:11:42'!
+!Report methodsFor: 'compute transaction part' stamp: 'jb 7/15/2021 11:33:16'!
 computeTransferDepositPart: aTransferDeposit
-
 	self subclassResponsibility ! !
 
-!Report methodsFor: 'compute transaction part' stamp: 'jb 7/13/2021 12:11:52'!
+!Report methodsFor: 'compute transaction part' stamp: 'jb 7/15/2021 11:33:20'!
 computeTransferWithdrawPart: aTransferWithdraw
-
 	self subclassResponsibility ! !
 
-!Report methodsFor: 'compute transaction part' stamp: 'jb 7/13/2021 12:11:59'!
+!Report methodsFor: 'compute transaction part' stamp: 'jb 7/15/2021 11:33:24'!
 computeWithdrawPart: aWithdraw
-
 	self subclassResponsibility ! !
 
 
@@ -1217,14 +1295,24 @@ forAccount: anAccount
 	^self new initializeWithAccount: anAccount! !
 
 
-!classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros2'!
-Report subclass: #PortfolioTreePrinter
+!classDefinition: #PortfolioTreeStyledReports category: 'ServiciosFinancieros2'!
+Report subclass: #PortfolioTreeStyledReports
 	instanceVariableNames: 'depth'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2'!
 
-!PortfolioTreePrinter methodsFor: 'private' stamp: 'jb 7/13/2021 13:45:43'!
+!PortfolioTreeStyledReports methodsFor: 'private' stamp: 'jb 7/15/2021 11:11:55'!
+addAccountChildrensToReport: aReport
+
+	account accounts do: [:anAccount | aReport addAll: (self class forAccount: anAccount withDepth: depth + 1) make		].! !
+
+!PortfolioTreeStyledReports methodsFor: 'private' stamp: 'jb 7/15/2021 11:11:19'!
+addItselfToReport: aReport
+	
+	aReport add: (self string: (account name) withDepth: depth).! !
+
+!PortfolioTreeStyledReports methodsFor: 'private' stamp: 'jb 7/15/2021 11:09:31'!
 string: aString withDepth: aDepth
 	| output |
 	
@@ -1234,6 +1322,89 @@ string: aString withDepth: aDepth
 	
 	^output! !
 
+
+!classDefinition: #PortfolioDetailedTreePrinter category: 'ServiciosFinancieros2'!
+PortfolioTreeStyledReports subclass: #PortfolioDetailedTreePrinter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2'!
+
+!PortfolioDetailedTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/15/2021 11:18:09'!
+computePortfolioPart: aPortfolio
+	| report |
+		
+	report := OrderedCollection new.
+	
+	self addItselfToReport: report.
+	self addAccountChildrensToReport: report.
+	self addBalanceToReport: report.
+	
+	^report! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/15/2021 11:16:21'!
+computeReceptiveAccountPart: aReceptiveAccount
+	| report |
+		
+	report := OrderedCollection new.
+	
+	self addItselfToReport: report.
+	self addSummaryToReport: report.
+	
+	^report! !
+
+
+!PortfolioDetailedTreePrinter methodsFor: 'initialization' stamp: 'jb 7/15/2021 11:18:25'!
+initializeWithAccount: anAccount
+	account := anAccount.
+	depth := 0.! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'initialization' stamp: 'jb 7/15/2021 11:18:35'!
+initializeWithAccount: anAccount withDepth: aDepth
+	account := anAccount.
+	depth := aDepth.! !
+
+
+!PortfolioDetailedTreePrinter methodsFor: 'private' stamp: 'jb 7/15/2021 12:04:10'!
+addBalanceToReport: aReport
+	| balance |
+	
+	balance := 'Balance = ', ((account balance) asString).
+	
+	aReport add: (self string: balance withDepth: (depth + 1)).! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'private' stamp: 'jb 7/15/2021 11:16:06'!
+addSummaryToReport: aReport
+	
+	| summary |
+	summary := (Summary forAccount: account) make.
+	summary := summary collect: [:line | self string: line withDepth: depth + 1].
+	
+	aReport addAll: summary.! !
+
+
+!PortfolioDetailedTreePrinter methodsFor: 'main protocol' stamp: 'jb 7/15/2021 11:14:32'!
+make
+	
+	^account computePartForReport: self.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PortfolioDetailedTreePrinter class' category: 'ServiciosFinancieros2'!
+PortfolioDetailedTreePrinter class
+	instanceVariableNames: ''!
+
+!PortfolioDetailedTreePrinter class methodsFor: 'as yet unclassified' stamp: 'jb 7/15/2021 11:19:18'!
+forAccount: anAccount withDepth: aDepth
+	^self new initializeWithAccount: anAccount withDepth: aDepth! !
+
+
+!classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros2'!
+PortfolioTreeStyledReports subclass: #PortfolioTreePrinter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2'!
 
 !PortfolioTreePrinter methodsFor: 'main protocol' stamp: 'jb 7/14/2021 14:26:35'!
 make
@@ -1252,46 +1423,26 @@ initializeWithAccount: anAccount withDepth: aDepth
 	depth := aDepth.! !
 
 
-!PortfolioTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/14/2021 14:39:41'!
+!PortfolioTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/15/2021 11:13:06'!
 computePortfolioPart: aPortfolio
 	| report |
 	
 	report := OrderedCollection new.
 	
-	"self addItself."
-	report add: (self string: (account name) withDepth: depth).
-		
-	"self addChildren."
-	account accounts do: [:anAccount | report addAll: (self class forAccount: anAccount withDepth: depth + 1) make		].
-	
-	^report
-	
-	"
-		summary := (Summary withAccount: account) make.
-		summary collect: [:line | self string: line withDepth: depth].
-		report addAll: summary.
-	"! !
+	self addItselfToReport: report.
+	self addAccountChildrensToReport: report.
 
-!PortfolioTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/14/2021 14:50:26'!
+	^report! !
+
+!PortfolioTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/15/2021 11:13:22'!
 computeReceptiveAccountPart: aReceptiveAccount
 	| report |
 	
 	report := OrderedCollection new.
-	report add: (self string: (account name) withDepth: depth).
-	^report
 	
-	"
-	computeReceptiveAccountPart: aReceptiveAccount
-		| report |
-		
-		report := super computeReceptiveAccountPart: aReceptiveAccount.
-		
-		summary := (Summary withAccount: account) make.
-		summary collect: [:line | self string: line withDepth: depth].
-		report addAll: summary.
-		
-		^report
-	"! !
+	self addItselfToReport: report.
+	
+	^report! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1302,36 +1453,6 @@ PortfolioTreePrinter class
 !PortfolioTreePrinter class methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 14:24:30'!
 forAccount: anAccount withDepth: aDepth
 	^self new initializeWithAccount: anAccount withDepth: aDepth! !
-
-
-!classDefinition: #PortfolioDetailedTreePrinter category: 'ServiciosFinancieros2'!
-PortfolioTreePrinter subclass: #PortfolioDetailedTreePrinter
-	instanceVariableNames: ''
-	classVariableNames: ''
-	poolDictionaries: ''
-	category: 'ServiciosFinancieros2'!
-
-!PortfolioDetailedTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/14/2021 15:13:08'!
-computePortfolioPart: aPortfolio
-	| report |
-		
-	report := super computePortfolioPart: aPortfolio.
-	report add: (self string: ('Balance = ', (aPortfolio balance) asString) withDepth: (depth + 1)).
-	
-	^report! !
-
-!PortfolioDetailedTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/14/2021 15:01:08'!
-computeReceptiveAccountPart: aReceptiveAccount
-	| report summary |
-		
-	report := super computeReceptiveAccountPart: aReceptiveAccount.
-	
-	summary := (Summary forAccount: aReceptiveAccount) make.
-	summary := summary collect: [:line | self string: line withDepth: depth + 1].
-	
-	report addAll: summary.
-	
-	^report! !
 
 
 !classDefinition: #Summary category: 'ServiciosFinancieros2'!
