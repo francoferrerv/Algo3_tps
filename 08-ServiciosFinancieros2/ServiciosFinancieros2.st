@@ -1,3 +1,49 @@
+!classDefinition: #PortfolioDetailedTreePrinterTests category: 'ServiciosFinancieros2'!
+TestCase subclass: #PortfolioDetailedTreePrinterTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2'!
+
+!PortfolioDetailedTreePrinterTests methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 15:29:42'!
+test01WithPortfolioWithMultipleAccountsAndPortfoliosPrintsTheirNamesProperlyIndented
+	| childrenPortfolio angiesAccount expectedAnswer familyPortfolio johnsAccount myAccount |
+	
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	myAccount := ReceptiveAccount named: 'Cuenta mia'.
+	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	
+	Deposit register: 100 * peso on: myAccount.
+	Withdraw register: 50 * peso on: myAccount.
+	
+	Deposit register: 150 * peso on: johnsAccount.
+	
+	Transfer amount: 75 * peso from: angiesAccount to: johnsAccount.
+	
+	expectedAnswer := OrderedCollection new.
+	expectedAnswer add: 'Portfolio de la familia'.
+	expectedAnswer add: String tab, 'Cuenta mia'.
+	expectedAnswer add: String tab, String tab, 'Depósito por 100 pesos'.
+	expectedAnswer add: String tab, String tab, 'Extracción por 50 pesos'.
+	expectedAnswer add: String tab, String tab, 'Balance = 50 pesos'.
+	expectedAnswer add: String tab, 'Portfolio de hijos'.
+	expectedAnswer add: String tab, String tab, 'Cuenta de Juan'.
+	expectedAnswer add: String tab, String tab, String tab, 'Depósito por 150 pesos'.
+	expectedAnswer add: String tab, String tab, String tab, 'Entrada por transferencia de 75 pesos'.
+	expectedAnswer add: String tab, String tab, String tab, 'Balance = 225 pesos'.
+	expectedAnswer add: String tab, String tab, 'Cuenta de Angeles'.
+	expectedAnswer add: String tab, String tab, String tab, 'Salida por transferencia de 75 pesos'.
+	expectedAnswer add: String tab, String tab, String tab, 'Balance = -75 pesos'.
+	expectedAnswer add: String tab, String tab, 'Balance = 150 pesos'.
+	expectedAnswer add: String tab, 'Balance = 200 pesos'.
+	
+	
+		
+	self assert: expectedAnswer equals: (PortfolioDetailedTreePrinter forAccount: familyPortfolio) make! !
+
+
 !classDefinition: #PortfolioTest category: 'ServiciosFinancieros2'!
 TestCase subclass: #PortfolioTest
 	instanceVariableNames: ''
@@ -211,6 +257,49 @@ test15PortfolioCanNotIncludeAnyOfTheComposedAccountOfPortfolioToAdd
 		withExceptionDo: [ :anError | 
 			self assert: Portfolio canNotAddAccountErrorMessage equals: anError messageText.
 			self assert: portfolioToModify accountsIsEmpty ]! !
+
+
+!classDefinition: #PortfolioTreePrinterTests category: 'ServiciosFinancieros2'!
+TestCase subclass: #PortfolioTreePrinterTests
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2'!
+
+!PortfolioTreePrinterTests methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 15:27:01'!
+test01WithOneReceptiveAccountPrintsAccountName
+	| johnsAccount |
+	
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'.
+
+	 self assert: (OrderedCollection with: 'Cuenta de Juan') equals: (PortfolioTreePrinter forAccount: johnsAccount) make! !
+
+!PortfolioTreePrinterTests methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 15:27:47'!
+test02WithOneEmptyPortfolioPrintsPortfolioName
+	| childrenPortfolio |
+	
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos'.
+
+	 self assert: (OrderedCollection with: 'Portfolio de hijos') equals: (PortfolioTreePrinter forAccount: childrenPortfolio) make! !
+
+!PortfolioTreePrinterTests methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 15:28:46'!
+test03WithPortfolioWithMultipleAccountsAndPortfoliosPrintsTheirNamesProperlyIndented
+	| childrenPortfolio angiesAccount expectedAnswer familyPortfolio johnsAccount myAccount |
+	
+	johnsAccount := ReceptiveAccount named: 'Cuenta de Juan'. 
+	angiesAccount := ReceptiveAccount named: 'Cuenta de Angeles'. 
+	childrenPortfolio := Portfolio named: 'Portfolio de hijos' with: johnsAccount with: angiesAccount. 
+	myAccount := ReceptiveAccount named: 'Cuenta mia'.
+	familyPortfolio := Portfolio named: 'Portfolio de la familia' with: myAccount with: childrenPortfolio.
+	
+	expectedAnswer := OrderedCollection
+		with: 'Portfolio de la familia'
+		with: String tab, 'Cuenta mia'
+		with: String tab, 'Portfolio de hijos'
+		with: String tab, String tab, 'Cuenta de Juan'
+		with: String tab, String tab, 'Cuenta de Angeles'.
+		
+	self assert: expectedAnswer equals: (PortfolioTreePrinter forAccount: familyPortfolio) make! !
 
 
 !classDefinition: #ReceptiveAccountTest category: 'ServiciosFinancieros2'!
@@ -558,19 +647,31 @@ addTransactionsTo: aCollectionOfTransactions
 
 	self subclassResponsibility ! !
 
+
+!Account methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 14:27:06'!
+computePartForReport: aReport
+	self subclassResponsibility.! !
+
 
 !classDefinition: #Portfolio category: 'ServiciosFinancieros2'!
 Account subclass: #Portfolio
-	instanceVariableNames: 'accounts parents'
+	instanceVariableNames: 'accounts parents name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2'!
 
-!Portfolio methodsFor: 'initialization' stamp: 'HAW 5/25/2019 12:03:18'!
+!Portfolio methodsFor: 'initialization' stamp: 'jb 7/13/2021 12:33:03'!
 initialize
 
 	accounts := OrderedCollection new.
-	parents := OrderedCollection new.! !
+	parents := OrderedCollection new.
+	name := 'A Portfolio'! !
+
+!Portfolio methodsFor: 'initialization' stamp: 'jb 7/13/2021 12:33:13'!
+initializedWithName: aName
+
+	self initialize.
+	name := aName! !
 
 
 !Portfolio methodsFor: 'main protocol' stamp: 'jb 7/10/2021 14:47:24'!
@@ -583,6 +684,10 @@ hasRegistered: aTransaction
 
 	^accounts anySatisfy: [ :anAccount | anAccount hasRegistered: aTransaction ]! !
 
+!Portfolio methodsFor: 'main protocol' stamp: 'jb 7/13/2021 12:34:13'!
+name
+	^name! !
+
 !Portfolio methodsFor: 'main protocol' stamp: 'HAW 5/25/2019 11:38:32'!
 transactions
 	
@@ -593,6 +698,10 @@ transactions
 	
 	^transactions ! !
 
+
+!Portfolio methodsFor: 'accounts management' stamp: 'jb 7/13/2021 12:52:47'!
+accounts
+	^accounts! !
 
 !Portfolio methodsFor: 'accounts management' stamp: 'HAW 5/25/2019 11:49:20'!
 accountsIncludes: anAccount
@@ -668,6 +777,11 @@ signalCanNotAddAccount
 	
 	self error: self class canNotAddAccountErrorMessage! !
 
+
+!Portfolio methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 14:27:31'!
+computePartForReport: aReport
+	^aReport computePortfolioPart: self.! !
+
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Portfolio class' category: 'ServiciosFinancieros2'!
@@ -678,6 +792,17 @@ Portfolio class
 canNotAddAccountErrorMessage
 	
 	^'Can not add repeated account to a portfolio'! !
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:31:25'!
+named: aName
+	^self new initializedWithName: aName! !
+
+!Portfolio class methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:40:48'!
+named: aName with: anAccount with: anotherAccount
+
+	^self new initializedWithName: aName;
+		add: anAccount;
+		add: anotherAccount! !
 
 !Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:18:21'!
 with: anAccount
@@ -697,16 +822,23 @@ with: anAccount with: anotherAccount
 
 !classDefinition: #ReceptiveAccount category: 'ServiciosFinancieros2'!
 Account subclass: #ReceptiveAccount
-	instanceVariableNames: 'transactions'
+	instanceVariableNames: 'transactions name'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2'!
 
-!ReceptiveAccount methodsFor: 'initialization' stamp: 'HernanWilkinson 7/13/2011 18:35'!
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'jb 7/13/2021 12:20:45'!
 initialize
 
 	super initialize.
-	transactions := OrderedCollection new.! !
+	transactions := OrderedCollection new.
+	name := 'A ReceptiveAccount'! !
+
+!ReceptiveAccount methodsFor: 'initialization' stamp: 'jb 7/13/2021 12:19:26'!
+initializeWithName: aName
+
+	self initialize.
+	name := aName! !
 
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'jb 7/10/2021 14:47:13'!
@@ -721,6 +853,10 @@ hasRegistered: aTransaction
 
 	^ transactions includes: aTransaction 
 ! !
+
+!ReceptiveAccount methodsFor: 'main protocol' stamp: 'jb 7/13/2021 12:34:20'!
+name
+	^name! !
 
 !ReceptiveAccount methodsFor: 'main protocol' stamp: 'HernanWilkinson 7/13/2011 18:37'!
 register: aTransaction
@@ -749,6 +885,22 @@ addedTo: aPortfolio
 isComposedBy: anAccount
 
 	^self = anAccount ! !
+
+
+!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 14:27:42'!
+computePartForReport: aReport
+	^aReport computeReceptiveAccountPart: self.! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'ReceptiveAccount class' category: 'ServiciosFinancieros2'!
+ReceptiveAccount class
+	instanceVariableNames: ''!
+
+!ReceptiveAccount class methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:19:05'!
+named: aName
+
+	^self new initializeWithName: aName! !
 
 
 !classDefinition: #AccountTransaction category: 'ServiciosFinancieros2'!
@@ -1024,29 +1176,162 @@ Object subclass: #Report
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2'!
 
-!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:34'!
+!Report methodsFor: 'main protocol' stamp: 'jb 7/13/2021 12:11:09'!
+make
+	self subclassResponsibility! !
+
+
+!Report methodsFor: 'compute transaction part' stamp: 'jb 7/13/2021 12:11:34'!
 computeDepositPart: aDeposit
 
 	self subclassResponsibility ! !
 
-!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:42'!
+!Report methodsFor: 'compute transaction part' stamp: 'jb 7/13/2021 12:11:42'!
 computeTransferDepositPart: aTransferDeposit
 
 	self subclassResponsibility ! !
 
-!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:52'!
+!Report methodsFor: 'compute transaction part' stamp: 'jb 7/13/2021 12:11:52'!
 computeTransferWithdrawPart: aTransferWithdraw
 
 	self subclassResponsibility ! !
 
-!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:59'!
+!Report methodsFor: 'compute transaction part' stamp: 'jb 7/13/2021 12:11:59'!
 computeWithdrawPart: aWithdraw
 
 	self subclassResponsibility ! !
 
-!Report methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:11:09'!
+
+!Report methodsFor: 'initialization' stamp: 'jb 7/13/2021 12:25:44'!
+initializeWithAccount: anAccount
+	account := anAccount! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'Report class' category: 'ServiciosFinancieros2'!
+Report class
+	instanceVariableNames: ''!
+
+!Report class methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:25:14'!
+forAccount: anAccount
+	^self new initializeWithAccount: anAccount! !
+
+
+!classDefinition: #PortfolioTreePrinter category: 'ServiciosFinancieros2'!
+Report subclass: #PortfolioTreePrinter
+	instanceVariableNames: 'depth'
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2'!
+
+!PortfolioTreePrinter methodsFor: 'private' stamp: 'jb 7/13/2021 13:45:43'!
+string: aString withDepth: aDepth
+	| output |
+	
+	output := aString.
+	
+	(1 to: aDepth) do: [:idx | output := String tab, output].
+	
+	^output! !
+
+
+!PortfolioTreePrinter methodsFor: 'main protocol' stamp: 'jb 7/14/2021 14:26:35'!
 make
-	self subclassResponsibility! !
+	
+	^account computePartForReport: self.! !
+
+
+!PortfolioTreePrinter methodsFor: 'initialization' stamp: 'jb 7/14/2021 14:25:33'!
+initializeWithAccount: anAccount
+	account := anAccount.
+	depth := 0.! !
+
+!PortfolioTreePrinter methodsFor: 'initialization' stamp: 'jb 7/14/2021 14:24:19'!
+initializeWithAccount: anAccount withDepth: aDepth
+	account := anAccount.
+	depth := aDepth.! !
+
+
+!PortfolioTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/14/2021 14:39:41'!
+computePortfolioPart: aPortfolio
+	| report |
+	
+	report := OrderedCollection new.
+	
+	"self addItself."
+	report add: (self string: (account name) withDepth: depth).
+		
+	"self addChildren."
+	account accounts do: [:anAccount | report addAll: (self class forAccount: anAccount withDepth: depth + 1) make		].
+	
+	^report
+	
+	"
+		summary := (Summary withAccount: account) make.
+		summary collect: [:line | self string: line withDepth: depth].
+		report addAll: summary.
+	"! !
+
+!PortfolioTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/14/2021 14:50:26'!
+computeReceptiveAccountPart: aReceptiveAccount
+	| report |
+	
+	report := OrderedCollection new.
+	report add: (self string: (account name) withDepth: depth).
+	^report
+	
+	"
+	computeReceptiveAccountPart: aReceptiveAccount
+		| report |
+		
+		report := super computeReceptiveAccountPart: aReceptiveAccount.
+		
+		summary := (Summary withAccount: account) make.
+		summary collect: [:line | self string: line withDepth: depth].
+		report addAll: summary.
+		
+		^report
+	"! !
+
+"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
+
+!classDefinition: 'PortfolioTreePrinter class' category: 'ServiciosFinancieros2'!
+PortfolioTreePrinter class
+	instanceVariableNames: ''!
+
+!PortfolioTreePrinter class methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 14:24:30'!
+forAccount: anAccount withDepth: aDepth
+	^self new initializeWithAccount: anAccount withDepth: aDepth! !
+
+
+!classDefinition: #PortfolioDetailedTreePrinter category: 'ServiciosFinancieros2'!
+PortfolioTreePrinter subclass: #PortfolioDetailedTreePrinter
+	instanceVariableNames: ''
+	classVariableNames: ''
+	poolDictionaries: ''
+	category: 'ServiciosFinancieros2'!
+
+!PortfolioDetailedTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/14/2021 15:13:08'!
+computePortfolioPart: aPortfolio
+	| report |
+		
+	report := super computePortfolioPart: aPortfolio.
+	report add: (self string: ('Balance = ', (aPortfolio balance) asString) withDepth: (depth + 1)).
+	
+	^report! !
+
+!PortfolioDetailedTreePrinter methodsFor: 'compute accounts part' stamp: 'jb 7/14/2021 15:01:08'!
+computeReceptiveAccountPart: aReceptiveAccount
+	| report summary |
+		
+	report := super computeReceptiveAccountPart: aReceptiveAccount.
+	
+	summary := (Summary forAccount: aReceptiveAccount) make.
+	summary := summary collect: [:line | self string: line withDepth: depth + 1].
+	
+	report addAll: summary.
+	
+	^report! !
 
 
 !classDefinition: #Summary category: 'ServiciosFinancieros2'!
@@ -1056,28 +1341,28 @@ Report subclass: #Summary
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2'!
 
-
-!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:27:41'!
+!Summary methodsFor: 'compute transaction part' stamp: 'jb 7/12/2021 21:27:41'!
 computeDepositPart: aDeposit
 
 	^ 'Depósito por ', (aDeposit value) asString.! !
 
-!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:32:53'!
+!Summary methodsFor: 'compute transaction part' stamp: 'jb 7/12/2021 21:32:53'!
 computeTransferDepositPart: aTransferDeposit
 
 	^ 'Entrada por transferencia de ', (aTransferDeposit value) asString! !
 
-!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:33:08'!
+!Summary methodsFor: 'compute transaction part' stamp: 'jb 7/12/2021 21:33:08'!
 computeTransferWithdrawPart: aTransferWithdraw
 	
 	^ 'Salida por transferencia de ', (aTransferWithdraw value) asString! !
 
-!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:32:24'!
+!Summary methodsFor: 'compute transaction part' stamp: 'jb 7/12/2021 21:32:24'!
 computeWithdrawPart: aWithdraw
 	
 	^ 'Extracción por ', (aWithdraw value) asString.! !
 
-!Summary methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:23:47'!
+
+!Summary methodsFor: 'main protocol' stamp: 'jb 7/12/2021 21:23:47'!
 make
 	| report |
 	
@@ -1094,15 +1379,6 @@ Report subclass: #TransferNet
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2'!
-
-!TransferNet methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:35:33'!
-make
-	| transactions |
-
-	transactions := account transactions.
-	
-	^transactions inject: 0 into: [:transferNet :transaction | transferNet + (transaction computePartForReport: self)]! !
-
 
 !TransferNet methodsFor: 'transaction messages' stamp: 'jb 7/12/2021 21:30:54'!
 computeDepositPart: aDeposit
@@ -1123,6 +1399,15 @@ computeTransferWithdrawPart: aTransferWithdraw
 computeWithdrawPart: aWithdraw
 
 	^0! !
+
+
+!TransferNet methodsFor: 'main protocol' stamp: 'jb 7/12/2021 21:35:33'!
+make
+	| transactions |
+
+	transactions := account transactions.
+	
+	^transactions inject: 0 into: [:transferNet :transaction | transferNet + (transaction computePartForReport: self)]! !
 
 
 !classDefinition: #Transfer category: 'ServiciosFinancieros2'!
