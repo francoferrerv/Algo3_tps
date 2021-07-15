@@ -584,7 +584,7 @@ TestCase subclass: #TransferTest
 	poolDictionaries: ''
 	category: 'ServiciosFinancieros2'!
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:07:03'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:07:03'!
 test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAccount
 
 	| destinationAccount originAccount |
@@ -600,7 +600,7 @@ test01ATransferDecreasesBalanceFromOriginAccountAndIncreasesItForDestinationAcco
 	self assert: 8 * peso equals: originAccount balance.
 	self assert: 12 * peso equals: destinationAccount balance.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 21:12:28'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 21:12:28'!
 test02ATransferKnowsItsValue
 
 	| destinationAccount originAccount transfer |
@@ -615,7 +615,7 @@ test02ATransferKnowsItsValue
 	
 	self assert: 2 * peso equals: transfer value.! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:44'!
 test03DepositLegKnowsItsWithdrawCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -630,7 +630,7 @@ test03DepositLegKnowsItsWithdrawCounterpart
 	
 	self assert: transfer withdrawLeg equals: transfer depositLeg withdrawLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:01:51'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:01:51'!
 test04WithdrawLegKnowsItsDepositCounterpart
 
 	| destinationAccount originAccount transfer |
@@ -645,7 +645,7 @@ test04WithdrawLegKnowsItsDepositCounterpart
 	
 	self assert: transfer depositLeg equals: transfer withdrawLeg depositLeg! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:36'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:36'!
 test05OriginAndDestinationAccountsCannotBeTheSame
 
 	| originAccount |
@@ -661,7 +661,7 @@ test05OriginAndDestinationAccountsCannotBeTheSame
 		]
 ! !
 
-!TransferTest methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 23:02:44'!
+!TransferTest methodsFor: 'tests' stamp: 'LL 9/20/2020 23:02:44'!
 test06CannotTransferAZeroAmount
 
 	| originAccount destinationAccount |
@@ -720,8 +720,7 @@ addTransactionsTo: aCollectionOfTransactions
 
 	self subclassResponsibility ! !
 
-
-!Account methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 14:27:06'!
+!Account methodsFor: 'private' stamp: 'jb 7/14/2021 14:27:06'!
 computePartForReport: aReport
 	self subclassResponsibility.! !
 
@@ -801,6 +800,11 @@ add: accountToAdd
 	! !
 
 
+!Portfolio methodsFor: 'reports' stamp: 'jb 7/14/2021 14:27:31'!
+computePartForReport: aReport
+	^aReport computePortfolioPart: self.! !
+
+
 !Portfolio methodsFor: 'private' stamp: 'HAW 5/25/2019 11:42:55'!
 addTransactionsTo: aCollectionOfTransactions
 
@@ -850,41 +854,37 @@ signalCanNotAddAccount
 	
 	self error: self class canNotAddAccountErrorMessage! !
 
-
-!Portfolio methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 14:27:31'!
-computePartForReport: aReport
-	^aReport computePortfolioPart: self.! !
-
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
 !classDefinition: 'Portfolio class' category: 'ServiciosFinancieros2'!
 Portfolio class
 	instanceVariableNames: ''!
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:48:55'!
+!Portfolio class methodsFor: 'error messages' stamp: 'HAW 5/25/2019 11:48:55'!
 canNotAddAccountErrorMessage
 	
 	^'Can not add repeated account to a portfolio'! !
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:31:25'!
+
+!Portfolio class methodsFor: 'instance creation' stamp: 'jb 7/13/2021 12:31:25'!
 named: aName
 	^self new initializedWithName: aName! !
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:40:48'!
+!Portfolio class methodsFor: 'instance creation' stamp: 'jb 7/13/2021 12:40:48'!
 named: aName with: anAccount with: anotherAccount
 
 	^self new initializedWithName: aName;
 		add: anAccount;
 		add: anotherAccount! !
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:18:21'!
+!Portfolio class methodsFor: 'instance creation' stamp: 'HAW 5/25/2019 11:18:21'!
 with: anAccount
 
 	^self new 
 		add: anAccount;
 		yourself! !
 
-!Portfolio class methodsFor: 'as yet unclassified' stamp: 'HAW 5/25/2019 11:23:59'!
+!Portfolio class methodsFor: 'instance creation' stamp: 'HAW 5/25/2019 11:23:59'!
 with: anAccount with: anotherAccount
 
 	^self new 
@@ -960,7 +960,7 @@ isComposedBy: anAccount
 	^self = anAccount ! !
 
 
-!ReceptiveAccount methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 14:27:42'!
+!ReceptiveAccount methodsFor: 'reports' stamp: 'jb 7/14/2021 14:27:42'!
 computePartForReport: aReport
 	^aReport computeReceptiveAccountPart: self.! !
 
@@ -970,7 +970,7 @@ computePartForReport: aReport
 ReceptiveAccount class
 	instanceVariableNames: ''!
 
-!ReceptiveAccount class methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:19:05'!
+!ReceptiveAccount class methodsFor: 'instance creation' stamp: 'jb 7/13/2021 12:19:05'!
 named: aName
 
 	^self new initializeWithName: aName! !
@@ -1020,20 +1020,10 @@ affectBalance: aBalance
 	^aBalance + value ! !
 
 
-!Deposit methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:49:27'!
-affectTransferNet: aTransferNet withReportMaker: aReportMaker
-	
-	^aReportMaker affectTransferNet: aTransferNet withDeposit: self.! !
-
-!Deposit methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:24:21'!
+!Deposit methodsFor: 'reports' stamp: 'jb 7/12/2021 21:24:21'!
 computePartForReport: aReport
 
 	^aReport computeDepositPart: self! !
-
-!Deposit methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:25:02'!
-summaryStringForReportMaker: aReportMaker
-
-	^aReportMaker depositSummaryString: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1046,8 +1036,7 @@ for: aValue
 
 	^ self new initializeFor: aValue ! !
 
-
-!Deposit class methodsFor: 'as yet unclassified' stamp: 'LL 7/8/2021 21:45:00'!
+!Deposit class methodsFor: 'instance creation' stamp: 'LL 7/8/2021 21:45:00'!
 register: aValue on: account
 
 	| transaction |
@@ -1077,18 +1066,8 @@ initializeWith: aTransfer
 	transfer := aTransfer! !
 
 
-!TransferLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:49:56'!
-affectTransferNet: aTransferNet withReportMaker: aReportMaker
-	
-	self subclassResponsibility ! !
-
-!TransferLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:24:45'!
+!TransferLeg methodsFor: 'reports' stamp: 'jb 7/12/2021 21:24:45'!
 computePartForReport: aReport
-
-	self subclassResponsibility ! !
-
-!TransferLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:25:21'!
-summaryStringForReportMaker: aReportMaker
 
 	self subclassResponsibility ! !
 
@@ -1098,7 +1077,7 @@ summaryStringForReportMaker: aReportMaker
 TransferLeg class
 	instanceVariableNames: ''!
 
-!TransferLeg class methodsFor: 'as yet unclassified' stamp: 'LL 9/20/2020 22:45:01'!
+!TransferLeg class methodsFor: 'instance creation' stamp: 'LL 9/20/2020 22:45:01'!
 of: aTransfer on: anAccount
 
 	| transaction |
@@ -1128,20 +1107,10 @@ affectBalance: aBalance
 	^aBalance + self value! !
 
 
-!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:50:09'!
-affectTransferNet: aTransferNet withReportMaker: aReportMaker
-	
-	^aReportMaker affectTransferNet: aTransferNet withTransferDeposit: self.! !
-
-!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:25:01'!
+!TransferDepositLeg methodsFor: 'reports' stamp: 'jb 7/12/2021 21:25:01'!
 computePartForReport: aReport
 
 	^aReport computeTransferDepositPart: self! !
-
-!TransferDepositLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:25:38'!
-summaryStringForReportMaker: aReportMaker
-
-	^aReportMaker transferDepositSummaryString: self.! !
 
 
 !classDefinition: #TransferWithdrawLeg category: 'ServiciosFinancieros2'!
@@ -1163,20 +1132,10 @@ affectBalance: aBalance
 	^aBalance - self value! !
 
 
-!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:50:31'!
-affectTransferNet: aTransferNet withReportMaker: aReportMaker
-	
-	^aReportMaker affectTransferNet: aTransferNet withTransferWithdraw: self.! !
-
-!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:25:14'!
+!TransferWithdrawLeg methodsFor: 'reports' stamp: 'jb 7/12/2021 21:25:14'!
 computePartForReport: aReport
 
 	^aReport computeTransferWithdrawPart: self! !
-
-!TransferWithdrawLeg methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:26:11'!
-summaryStringForReportMaker: aReportMaker
-
-	^aReportMaker transferWithdrawSummaryString: self.! !
 
 
 !classDefinition: #Withdraw category: 'ServiciosFinancieros2'!
@@ -1204,20 +1163,10 @@ affectBalance: aBalance
 	^aBalance - value! !
 
 
-!Withdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:50:42'!
-affectTransferNet: aTransferNet withReportMaker: aReportMaker
-	
-	^aReportMaker affectTransferNet: aTransferNet withWithdraw: self.! !
-
-!Withdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 21:25:24'!
+!Withdraw methodsFor: 'reports' stamp: 'jb 7/12/2021 21:25:24'!
 computePartForReport: aReport
 
 	^aReport computeWithdrawPart: self! !
-
-!Withdraw methodsFor: 'as yet unclassified' stamp: 'jb 7/12/2021 20:26:22'!
-summaryStringForReportMaker: aReportMaker
-
-	^aReportMaker withdrawSummaryString: self.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -1230,8 +1179,7 @@ for: aValue
 
 	^ self new initializeFor: aValue ! !
 
-
-!Withdraw class methodsFor: 'as yet unclassified' stamp: 'LL 7/8/2021 21:45:05'!
+!Withdraw class methodsFor: 'instance creation' stamp: 'LL 7/8/2021 21:45:05'!
 register: aValue on: account
 
 	| transaction |
@@ -1290,7 +1238,7 @@ initializeWithAccount: anAccount
 Report class
 	instanceVariableNames: ''!
 
-!Report class methodsFor: 'as yet unclassified' stamp: 'jb 7/13/2021 12:25:14'!
+!Report class methodsFor: 'instance creation' stamp: 'jb 7/13/2021 12:25:14'!
 forAccount: anAccount
 	^self new initializeWithAccount: anAccount! !
 
@@ -1394,7 +1342,7 @@ make
 PortfolioDetailedTreePrinter class
 	instanceVariableNames: ''!
 
-!PortfolioDetailedTreePrinter class methodsFor: 'as yet unclassified' stamp: 'jb 7/15/2021 11:19:18'!
+!PortfolioDetailedTreePrinter class methodsFor: 'instance creation' stamp: 'jb 7/15/2021 11:19:18'!
 forAccount: anAccount withDepth: aDepth
 	^self new initializeWithAccount: anAccount withDepth: aDepth! !
 
@@ -1450,7 +1398,7 @@ computeReceptiveAccountPart: aReceptiveAccount
 PortfolioTreePrinter class
 	instanceVariableNames: ''!
 
-!PortfolioTreePrinter class methodsFor: 'as yet unclassified' stamp: 'jb 7/14/2021 14:24:30'!
+!PortfolioTreePrinter class methodsFor: 'instance creation' stamp: 'jb 7/14/2021 14:24:30'!
 forAccount: anAccount withDepth: aDepth
 	^self new initializeWithAccount: anAccount withDepth: aDepth! !
 
