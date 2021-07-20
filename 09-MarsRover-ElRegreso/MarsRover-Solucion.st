@@ -5,111 +5,123 @@ TestCase subclass: #TestLog
 	poolDictionaries: ''
 	category: 'MarsRover-Solucion'!
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:59:25'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:12:39'!
 test01
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addPositionLogger: log.
+	
 	
 	self assert: OrderedCollection new equals: log asOrderedCollection.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:34:33'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:13:04'!
 test02
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addPositionLogger: log.
 	marsrover processCommands: 'f'.
 	
 	self assert: (OrderedCollection with: (0@1) asString) equals: log asOrderedCollection.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:43:38'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:13:16'!
 test03
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addPositionLogger: log.
 	marsrover processCommands: 'b'.
 	
 	self assert: (OrderedCollection with: (0@-1) asString) equals: log asOrderedCollection.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:44:40'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:13:22'!
 test04
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #East.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addPositionLogger: log.
 	marsrover processCommands: 'f'.
 	
 	self assert: (OrderedCollection with: (1@0) asString) equals: log asOrderedCollection.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:44:56'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:14:50'!
 test05
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #West.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addPositionLogger: log.
 	marsrover processCommands: 'f'.
 	
 	self assert: (OrderedCollection with: (-1@0) asString) equals: log asOrderedCollection.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:53:57'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:15:17'!
 test06
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addHeadingLogger: log.
 	marsrover processCommands: 'l'.
 	
 	self assert: (OrderedCollection with: 'West') equals: log asOrderedCollection.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:53:51'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:15:31'!
 test07
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addHeadingLogger: log.
 	marsrover processCommands: 'r'.
 	
 	self assert: (OrderedCollection with: 'East') equals: log asOrderedCollection.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:54:14'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:15:40'!
 test08
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #East.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addHeadingLogger: log.
 	marsrover processCommands: 'l'.
 	
 	self assert: (OrderedCollection with: 'North') equals: log asOrderedCollection.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:54:44'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:15:48'!
 test09
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #East.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addHeadingLogger: log.
 	marsrover processCommands: 'r'.
 	
 	self assert: (OrderedCollection with: 'South') equals: log asOrderedCollection.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/17/2021 22:57:49'!
+!TestLog methodsFor: 'tests' stamp: 'FVF 7/19/2021 21:16:11'!
 test10
 
 	| log marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	log := Log with: marsrover.
+	log := Log new.
+	marsrover addPositionLogger: log.
+	marsrover addHeadingLogger: log.
 	marsrover processCommands: 'fblr'.
 	
 	self assert: (OrderedCollection with: '0@1' with: '0@0' with: 'West' with: 'North') equals: log asOrderedCollection.! !
@@ -246,23 +258,25 @@ TestCase subclass: #TestWindow
 	poolDictionaries: ''
 	category: 'MarsRover-Solucion'!
 
-!TestWindow methodsFor: 'as yet unclassified' stamp: 'FVF 7/17/2021 23:25:16'!
+!TestWindow methodsFor: 'as yet unclassified' stamp: 'FVF 7/19/2021 21:23:42'!
 test01
 
 	| window marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	window := Window with: marsrover.
+	window := Window new.
+	marsrover addPositionWindow: window.
 	
 	self assert:  (0@0) equals: window getPosition.! !
 
-!TestWindow methodsFor: 'as yet unclassified' stamp: 'FVF 7/17/2021 23:27:48'!
+!TestWindow methodsFor: 'as yet unclassified' stamp: 'FVF 7/19/2021 21:24:43'!
 test02
 
 	| window marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	window := Window with: marsrover.
+	window := Window new.
+	marsrover addPositionWindow: window.
 	marsrover processCommands: 'f'.
 	
 	self assert: (0@1) equals: window getPosition.! !
@@ -297,10 +311,14 @@ initialize
 
 	registers := OrderedCollection new.! !
 
-!Log methodsFor: 'as yet unclassified' stamp: 'FVF 7/17/2021 23:01:48'!
+!Log methodsFor: 'as yet unclassified' stamp: 'FVF 7/19/2021 21:21:05'!
 notifyChangeInHeading: aDirection
-
-	registers add: aDirection asString.! !
+	
+	(aDirection isKindOf: MarsRoverHeadFacingNorth) ifTrue: [registers add: 'North'.].
+	(aDirection isKindOf: MarsRoverHeadFacingWest) ifTrue: [registers add: 'West'.].
+	(aDirection isKindOf: MarsRoverHeadFacingSouth) ifTrue: [registers add: 'South'.].
+	(aDirection isKindOf: MarsRoverHeadFacingEast) ifTrue: [registers add: 'East'.].
+	! !
 
 !Log methodsFor: 'as yet unclassified' stamp: 'FVF 7/17/2021 22:32:40'!
 notifyChangeInPosition: aPosition
@@ -309,36 +327,21 @@ notifyChangeInPosition: aPosition
 
 	! !
 
-"-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
-
-!classDefinition: 'Log class' category: 'MarsRover-Solucion'!
-Log class
-	instanceVariableNames: ''!
-
-!Log class methodsFor: 'as yet unclassified' stamp: 'FVF 7/17/2021 22:31:08'!
-with: aRover
-	
-	| log |
-	
-	log := self new.
-	aRover addTrackingSystem: log.
-	
-	^log.! !
-
 
 !classDefinition: #MarsRover category: 'MarsRover-Solucion'!
 Object subclass: #MarsRover
-	instanceVariableNames: 'position head trackingSystems'
+	instanceVariableNames: 'position head positionTrackers directionTrackers'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Solucion'!
 
-!MarsRover methodsFor: 'initialization' stamp: 'FVF 7/17/2021 22:23:31'!
+!MarsRover methodsFor: 'initialization' stamp: 'FVF 7/19/2021 21:30:22'!
 initializeStartingAt: aPosition heading: aCardinalPoint 
 	
 	position := aPosition.
 	head := MarsRoverHead of: self facing: aCardinalPoint.
-	trackingSystems := nil.
+	positionTrackers := OrderedCollection new.
+	directionTrackers := OrderedCollection new.
 	! !
 
 
@@ -408,65 +411,78 @@ isRotateRightCommand: command
 	^ command = $r! !
 
 
-!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/17/2021 22:42:37'!
+!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/19/2021 20:58:48'!
 moveDown
-
-	position := position + (0@-1).
-	trackingSystems notifyChangeInPosition: position.! !
-
-!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/17/2021 22:42:32'!
-moveLeft
-
-	position := position + (-1@0).
-	trackingSystems notifyChangeInPosition: position.! !
-
-!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/17/2021 22:42:26'!
-moveRight
-
-	position := position + (1@0).
-	trackingSystems notifyChangeInPosition: position.! !
-
-!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/17/2021 22:42:19'!
-moveUp
-
-	position := position + (0@1).
-	trackingSystems notifyChangeInPosition: position.! !
-
-
-!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/17/2021 23:00:53'!
-headEast
-
-	head := MarsRoverHeadFacingEast of: self.
 	
-	trackingSystems notifyChangeInHeading: #East.! !
+	self step: (0@-1).
+	! !
 
-!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/17/2021 23:01:12'!
+!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/19/2021 20:59:54'!
+moveLeft
+	
+	self step:(-1@0)
+	! !
+
+!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/19/2021 21:00:12'!
+moveRight
+	
+	self step:(1@0)
+! !
+
+!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/19/2021 21:00:26'!
+moveUp
+	
+	self step:(0@1)
+	! !
+
+!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/19/2021 21:30:04'!
+step: aStep
+
+	position := position + aStep.
+	positionTrackers do: [:positionTracker| positionTracker notifyChangeInPosition: position.]! !
+
+
+!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/19/2021 21:31:07'!
+face: aMarsroverHead
+
+	head := aMarsroverHead of: self.
+	directionTrackers do: [:directionTracker| directionTracker notifyChangeInHeading: head].! !
+
+!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/19/2021 21:02:53'!
+headEast
+	
+	self face: MarsRoverHeadFacingEast.
+	
+	! !
+
+!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/19/2021 21:04:18'!
 headNorth
 
-	head := MarsRoverHeadFacingNorth of: self.
-	
-	trackingSystems notifyChangeInHeading: #North.! !
+	self face: MarsRoverHeadFacingNorth.
+	! !
 
-!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/17/2021 23:01:24'!
+!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/19/2021 21:04:33'!
 headSouth
-
-	head := MarsRoverHeadFacingSouth of: self.
 	
-	trackingSystems notifyChangeInHeading: #South.! !
+	self face: MarsRoverHeadFacingSouth.
+	! !
 
-!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/17/2021 23:01:33'!
+!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/19/2021 21:04:47'!
 headWest
-
-	head := MarsRoverHeadFacingWest of: self.
 	
-	trackingSystems notifyChangeInHeading: #West.
+	self face: MarsRoverHeadFacingWest.
 	! !
 
 
-!MarsRover methodsFor: 'as yet unclassified' stamp: 'FVF 7/17/2021 22:28:52'!
-addTrackingSystem: aSystem
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'FVF 7/19/2021 21:30:22'!
+addHeadingLogger: aLog
 
-	trackingSystems := aSystem.! !
+	directionTrackers add: aLog! !
+
+!MarsRover methodsFor: 'as yet unclassified' stamp: 'FVF 7/19/2021 21:29:53'!
+addPositionLogger: aLog
+
+	positionTrackers add: aLog! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
@@ -711,15 +727,34 @@ whenFacing: aCardinalPoint
 
 !classDefinition: #Window category: 'MarsRover-Solucion'!
 Object subclass: #Window
-	instanceVariableNames: 'registers'
+	instanceVariableNames: 'position direction'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Solucion'!
 
-!Window methodsFor: 'as yet unclassified' stamp: 'FVF 7/17/2021 23:31:14'!
+!Window methodsFor: 'as yet unclassified' stamp: 'FVF 7/19/2021 21:35:51'!
+getDirection
+
+	^direction! !
+
+!Window methodsFor: 'as yet unclassified' stamp: 'FVF 7/19/2021 21:35:57'!
 getPosition
 
-	^0@0! !
+	^position! !
+
+!Window methodsFor: 'as yet unclassified' stamp: 'FVF 7/19/2021 21:34:46'!
+notifyChangeInHeading: aDirection
+	
+	(aDirection isKindOf: MarsRoverHeadFacingNorth) ifTrue: [direction := 'North'.].
+	(aDirection isKindOf: MarsRoverHeadFacingWest) ifTrue: [direction  := 'West'.].
+	(aDirection isKindOf: MarsRoverHeadFacingSouth) ifTrue: [direction := 'South'.].
+	(aDirection isKindOf: MarsRoverHeadFacingEast) ifTrue: [direction := 'East'.].
+	! !
+
+!Window methodsFor: 'as yet unclassified' stamp: 'FVF 7/19/2021 21:35:00'!
+notifyChangeInPosition: aPosition
+
+	position := aPosition asString.! !
 
 "-- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- "!
 
