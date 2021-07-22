@@ -454,10 +454,19 @@ processCommands: aStringWithCommands
 ! !
 
 
-!MarsRover methodsFor: 'testing' stamp: 'jb 7/22/2021 17:12:52'!
+!MarsRover methodsFor: 'testing' stamp: 'jb 7/22/2021 18:24:15'!
 isAt: aPosition heading: aCardinalPoint
 
-	^ ((position getValue) = aPosition) and: [ (head getValue) isHeading: aCardinalPoint ]! !
+	^ ((self positionValue) = aPosition) and: [ (self headValue) isHeading: aCardinalPoint ]! !
+
+
+!MarsRover methodsFor: 'private - observable values' stamp: 'jb 7/22/2021 18:12:43'!
+headValue
+	^head getValue! !
+
+!MarsRover methodsFor: 'private - observable values' stamp: 'jb 7/22/2021 18:12:23'!
+positionValue
+	^position getValue! !
 
 
 !MarsRover methodsFor: 'private - process commands' stamp: 'LL 6/30/2021 15:54:11'!
@@ -470,13 +479,13 @@ invalidCommandErrorMessage
 
 	^'Invalid command'! !
 
-!MarsRover methodsFor: 'private - process commands' stamp: 'FVF 7/17/2021 22:41:52'!
+!MarsRover methodsFor: 'private - process commands' stamp: 'jb 7/22/2021 18:13:11'!
 processCommand: aCommand
 
-	(self isForwardCommand: aCommand) ifTrue: [ ^ head movingForward ].
-	(self isBackwardCommand: aCommand) ifTrue: [ ^ head movingBackwards ].
-	(self isRotateRightCommand: aCommand) ifTrue: [ ^ head rotateRight ].
-	(self isRotateLeftCommand: aCommand) ifTrue: [ ^ head rotateLeft ].
+	(self isForwardCommand: aCommand) ifTrue: [ ^ self headValue movingForward ].
+	(self isBackwardCommand: aCommand) ifTrue: [ ^ self headValue movingBackwards ].
+	(self isRotateRightCommand: aCommand) ifTrue: [ ^ self headValue rotateRight ].
+	(self isRotateLeftCommand: aCommand) ifTrue: [ ^ self headValue rotateLeft ].
 	
 ! !
 
@@ -533,14 +542,14 @@ moveUp
 	self step:(0@1)
 	! !
 
-!MarsRover methodsFor: 'dd - moving' stamp: 'FVF 7/20/2021 12:50:40'!
+!MarsRover methodsFor: 'dd - moving' stamp: 'jb 7/22/2021 18:13:41'!
 step: aStep
 
-	position setValue: (position value + aStep).
+	position setValue: (self positionValue + aStep).
 	! !
 
 
-!MarsRover methodsFor: 'dd - heading' stamp: 'FVF 7/20/2021 12:29:03'!
+!MarsRover methodsFor: 'dd - heading' stamp: 'jb 7/22/2021 18:13:57'!
 face: aMarsroverHead
 
 	head setValue: (aMarsroverHead of: self).
@@ -891,14 +900,6 @@ Object subclass: #ObserverAdapter
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Solucion'!
-
-!ObserverAdapter methodsFor: 'private' stamp: 'FVF 7/20/2021 12:40:10'!
-doesNotUnderstand: aMessage
-
-	^aMessage sendTo: observer 
-
-	! !
-
 
 !ObserverAdapter methodsFor: 'main protocol' stamp: 'FVF 7/20/2021 13:03:28'!
 notifyChange: aValue
