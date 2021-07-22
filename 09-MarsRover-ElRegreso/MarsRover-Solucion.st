@@ -1,130 +1,130 @@
 !classDefinition: #TestLog category: 'MarsRover-Solucion'!
 TestCase subclass: #TestLog
-	instanceVariableNames: 'testLog PositionLog DirectionLog'
+	instanceVariableNames: 'log positionLog directionLog'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Solucion'!
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:58'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test01MarsRoverWithNoCommandsTheLogIsEmpty
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addPositionObserver: PositionLog.
-	marsrover addDirectionObserver: DirectionLog.
+	marsrover addPositionObserver: positionLog.
+	marsrover addDirectionObserver: directionLog.
 	
-	
-	self assert: testLog isEmpty.! !
+	self assert: log isEmpty.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:37:32'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test02TestLogContainsNewPositionWhenMarsRoverMovesForward
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addPositionObserver: PositionLog.
+	marsrover addPositionObserver: positionLog.
 	marsrover processCommands: 'f'.
 	
-	self assert: (OrderedCollection with: (0@1) asString) equals: testLog getRegisters.! !
+	self deny: log isEmpty.
+	self assert: (OrderedCollection with: (0@1) asString) equals: log getRegisters.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:37:32'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test03TestLogContainsNewPositionWhenMarsRoverMovesBackwards
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addPositionObserver: PositionLog.
+	marsrover addPositionObserver: positionLog.
 	marsrover processCommands: 'b'.
 	
-	self assert: (OrderedCollection with: (0@-1) asString) equals: testLog getRegisters.! !
+	self assert: (OrderedCollection with: (0@-1) asString) equals: log getRegisters.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:37:32'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test04TestLogContainsNewPositionWhenMarsRoverFacingEastMovesForward
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #East.
-	marsrover addPositionObserver: PositionLog.
+	marsrover addPositionObserver: positionLog.
 	marsrover processCommands: 'f'.
 	
-	self assert: (OrderedCollection with: (1@0) asString) equals: testLog getRegisters.! !
+	self assert: (OrderedCollection with: (1@0) asString) equals: log getRegisters.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:37:32'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test05TestLogContainsNewPositionWhenMarsRoverFacingWestMovesForward
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #West.
-	marsrover addPositionObserver: PositionLog.
+	marsrover addPositionObserver: positionLog.
 	marsrover processCommands: 'f'.
 	
-	self assert: (OrderedCollection with: (-1@0) asString) equals: testLog getRegisters.! !
+	self assert: (OrderedCollection with: (-1@0) asString) equals: log getRegisters.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:37:32'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test06TestLogContainsNewDirectionWhenMarsRoverTurnsLeft
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addDirectionObserver: DirectionLog.
+	marsrover addDirectionObserver: directionLog.
 	marsrover processCommands: 'l'.
 	
-	self assert: (OrderedCollection with: 'West') equals: testLog getRegisters.! !
+	self assert: (OrderedCollection with: 'West') equals: log getRegisters.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:37:32'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test07TestLogContainsNewDirectionWhenMarsRoverTurnsRight
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addDirectionObserver: DirectionLog.
+	marsrover addDirectionObserver: directionLog.
 	marsrover processCommands: 'r'.
 	
-	self assert: (OrderedCollection with: 'East') equals: testLog getRegisters.! !
+	self assert: (OrderedCollection with: 'East') equals: log getRegisters.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:37:32'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test08TestLogContainsNewDirectionWhenMarsRoverFacingEastTurnsLeft
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #East.
-	marsrover addDirectionObserver: DirectionLog.
+	marsrover addDirectionObserver: directionLog.
 	marsrover processCommands: 'l'.
 	
-	self assert: (OrderedCollection with: 'North') equals: testLog getRegisters.! !
+	self assert: (OrderedCollection with: 'North') equals: log getRegisters.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:37:32'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test09TestLogContainsNewDirectionWhenMarsRoverFacingEastTurnsRight
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #East.
-	marsrover addDirectionObserver: DirectionLog.
+	marsrover addDirectionObserver: directionLog.
 	marsrover processCommands: 'r'.
 	
-	self assert: (OrderedCollection with: 'South') equals: testLog getRegisters.! !
+	self assert: (OrderedCollection with: 'South') equals: log getRegisters.! !
 
-!TestLog methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:37:32'!
+!TestLog methodsFor: 'tests' stamp: 'jb 7/22/2021 17:15:32'!
 test10PositionAndDirectionLogOnMultipleCommandsRecordsChanges
 
 	|  marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addPositionObserver: PositionLog.
-	marsrover addDirectionObserver: DirectionLog.
+	marsrover addPositionObserver: positionLog.
+	marsrover addDirectionObserver: directionLog.
 	marsrover processCommands: 'fblr'.
 	
-	self assert: (OrderedCollection with: '0@1' with: '0@0' with: 'West' with: 'North') equals: testLog getRegisters.! !
+	self assert: (OrderedCollection with: '0@1' with: '0@0' with: 'West' with: 'North') equals: log getRegisters.! !
 
 
-!TestLog methodsFor: 'setUp' stamp: 'FVF 7/22/2021 11:24:22'!
+!TestLog methodsFor: 'setUp' stamp: 'jb 7/22/2021 17:15:32'!
 setUp
 
-	testLog := Log new.
-	PositionLog := ObserverAdapter forObserver: testLog onChangeSendMessage: #notifyChangeInPosition:.
+	log := Log new.
 	
-	DirectionLog := ObserverAdapter forObserver: testLog onChangeSendMessage: #notifyChangeInHeading:.
+	positionLog := ObserverAdapter forObserver: log onChangeSendMessage: #notifyChangeInPosition:.	
+	directionLog := ObserverAdapter forObserver: log onChangeSendMessage: #notifyChangeInHeading:.
 	! !
 
 
@@ -254,131 +254,134 @@ assertRoverStartingAt: aPosition heading: aCardinalPoint afterProcessing: aStrin
 
 !classDefinition: #TestWindow category: 'MarsRover-Solucion'!
 TestCase subclass: #TestWindow
-	instanceVariableNames: 'testWindow testPositionWindow testDirectionWindow'
+	instanceVariableNames: 'window positionWindow directionWindow'
 	classVariableNames: ''
 	poolDictionaries: ''
 	category: 'MarsRover-Solucion'!
 
-!TestWindow methodsFor: 'set up' stamp: 'FVF 7/20/2021 13:51:50'!
+!TestWindow methodsFor: 'set up' stamp: 'jb 7/22/2021 17:16:21'!
 setUp
 
-	testWindow := Window new.
-	testPositionWindow := ObserverAdapter forObserver: testWindow onChangeSendMessage: #notifyChangeInPosition:.
+	window := Window new.
 	
-	testDirectionWindow := ObserverAdapter forObserver: testWindow onChangeSendMessage: #notifyChangeInHeading:.! !
+	positionWindow := ObserverAdapter forObserver: window onChangeSendMessage: #notifyChangeInPosition:.
+	directionWindow := ObserverAdapter forObserver: window onChangeSendMessage: #notifyChangeInHeading:.! !
 
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:58'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:16:13'!
 test01MarsRoverWithNoCommandsTheWindowHasNoPosition
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addPositionObserver: testPositionWindow.
-	marsrover addDirectionObserver: testDirectionWindow.
+	marsrover addPositionObserver: positionWindow.
+	marsrover addDirectionObserver: directionWindow.
 	
-	self deny: testWindow hasPosition.! !
+	self deny: window hasPosition.
+	self deny: window hasDirection.! !
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:58'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:16:47'!
 test02TestWindowDisplaysNewPositionWhenMarsRoverMovesForward
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addPositionObserver: testPositionWindow.
+	marsrover addPositionObserver: positionWindow.
 	marsrover processCommands: 'f'.
 	
-	self assert: '0@1' equals: testWindow getPosition.! !
+	self assert: window hasPosition.
+	self assert: '0@1' equals: window getPosition.! !
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:58'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:16:03'!
 test03TestWindowDisplaysNewPositionWhenMarsRoverMovesBackwards
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addPositionObserver: testPositionWindow.
+	marsrover addPositionObserver: positionWindow.
 	marsrover processCommands: 'b'.
 	
-	self assert: '0@-1' equals: testWindow getPosition.! !
+	self assert: '0@-1' equals: window getPosition.! !
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:57'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:16:03'!
 test04TestWindowDisplaysNewPositionWhenMarsRoverFacingEastMovesForward
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #East.
-	marsrover addPositionObserver: testPositionWindow.
+	marsrover addPositionObserver: positionWindow.
 	marsrover processCommands: 'f'.
 	
-	self assert: '1@0' equals: testWindow getPosition.! !
+	self assert: '1@0' equals: window getPosition.! !
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:58'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:16:03'!
 test05TestWindowDisplaysNewPositionWhenMarsRoverFacingWestMovesForward
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #West.
-	marsrover addPositionObserver: testPositionWindow.
+	marsrover addPositionObserver: positionWindow.
 	marsrover processCommands: 'f'.
 	
-	self assert: '-1@0'  equals: testWindow getPosition.! !
+	self assert: '-1@0'  equals: window getPosition.! !
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:34'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:17:07'!
 test06TestWindowDisplaysNewPositionWhenMarsRoverTurnsLeft
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addDirectionObserver: testDirectionWindow.
+	marsrover addDirectionObserver: directionWindow.
 	marsrover processCommands: 'l'.
 	
-	self assert:  'West' equals: testWindow getDirection! !
+	self assert: window hasDirection.
+	self assert:  'West' equals: window getDirection! !
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:34'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:16:13'!
 test07TestWindowDisplaysNewPositionWhenMarsRoverTurnsRight
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addDirectionObserver: testDirectionWindow.
+	marsrover addDirectionObserver: directionWindow.
 	marsrover processCommands: 'r'.
 	
-	self assert:  'East' equals: testWindow getDirection! !
+	self assert:  'East' equals: window getDirection! !
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:34'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:16:13'!
 test08TestWindowDisplaysNewPositionWhenMarsRoverFacingEastTurnsLeft
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #East.
-	marsrover addDirectionObserver: testDirectionWindow.
+	marsrover addDirectionObserver: directionWindow.
 	marsrover processCommands: 'l'.
 	
-	self assert:  'North' equals: testWindow getDirection! !
+	self assert:  'North' equals: window getDirection! !
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:34'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:16:13'!
 test09TestWindowDisplaysNewPositionWhenMarsRoverFacingEastTurnsRight
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #East.
-	marsrover addDirectionObserver: testDirectionWindow.
+	marsrover addDirectionObserver: directionWindow.
 	marsrover processCommands: 'r'.
 	
-	self assert:  'South' equals: testWindow getDirection! !
+	self assert:  'South' equals: window getDirection! !
 
-!TestWindow methodsFor: 'tests' stamp: 'FVF 7/22/2021 11:34:58'!
+!TestWindow methodsFor: 'tests' stamp: 'jb 7/22/2021 17:16:13'!
 test10PositionAndDirectionWindowOnMultipleCommandsRecordsChanges
 
 	| marsrover |
 	
 	marsrover := MarsRover startingAt: (0@0) heading: #North.
-	marsrover addPositionObserver: testPositionWindow.
-	marsrover addDirectionObserver: testDirectionWindow.
+	marsrover addPositionObserver: positionWindow.
+	marsrover addDirectionObserver: directionWindow.
 	marsrover processCommands: 'fblr'.
 	
-	self assert: '0@0' equals: testWindow getPosition.
-	self assert: 'North' equals: testWindow getDirection .! !
+	self assert: '0@0' equals: window getPosition.
+	self assert: 'North' equals: window getDirection .! !
 
 
 !classDefinition: #Log category: 'MarsRover-Solucion'!
@@ -451,10 +454,10 @@ processCommands: aStringWithCommands
 ! !
 
 
-!MarsRover methodsFor: 'testing' stamp: 'LL 6/30/2021 19:47:14'!
+!MarsRover methodsFor: 'testing' stamp: 'jb 7/22/2021 17:12:52'!
 isAt: aPosition heading: aCardinalPoint
 
-	^ position = aPosition and: [ head isHeading: aCardinalPoint ]! !
+	^ ((position getValue) = aPosition) and: [ (head getValue) isHeading: aCardinalPoint ]! !
 
 
 !MarsRover methodsFor: 'private - process commands' stamp: 'LL 6/30/2021 15:54:11'!
@@ -859,6 +862,10 @@ addObserver: anObserver
 
 	observers add: anObserver! !
 
+!Observable methodsFor: 'main protocol' stamp: 'jb 7/22/2021 17:08:01'!
+getValue
+	^value! !
+
 !Observable methodsFor: 'main protocol' stamp: 'FVF 7/20/2021 11:57:10'!
 setValue: aValue
 
@@ -957,6 +964,11 @@ getDirection
 getPosition
 
 	^position! !
+
+!Window methodsFor: 'accessing' stamp: 'jb 7/22/2021 17:13:54'!
+hasDirection
+
+	^ (direction = nil) not.! !
 
 !Window methodsFor: 'accessing' stamp: 'FVF 7/20/2021 11:12:13'!
 hasPosition
